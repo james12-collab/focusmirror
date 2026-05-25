@@ -5,5 +5,3 @@ requests
 pillow
 qrcode
 pyngrok
-mediapipe==0.10.35
-opencv-python-headless
