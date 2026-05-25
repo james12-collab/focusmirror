@@ -1,0 +1,11 @@
+flask
+numpy
+scikit-learn
+pynput
+pygetwindow
+requests
+pillow
+qrcode
+pyngrok
+opencv-python-headless
+mediapipe==0.10.13
