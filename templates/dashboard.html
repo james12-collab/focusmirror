@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FocusMirror</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0a0a0a; color:#fff; font-family:'Segoe UI',sans-serif; padding:30px; }
+    h1 { font-size:24px; font-weight:300; letter-spacing:4px; text-transform:uppercase; margin-bottom:24px; color:#1D9E75; }
+    .burnout-banner { display:none; background:#2e0d0d; border:1px solid #E24B4A; border-radius:10px; padding:12px 20px; margin-bottom:20px; font-size:14px; color:#E24B4A; }
+    .main { display:grid; grid-template-columns:380px 1fr; gap:20px; margin-bottom:20px; }
+    .cam-wrap { position:relative; border-radius:12px; overflow:hidden; border:1px solid #222; background:#111; }
+    .cam-wrap img { width:100%; display:block; }
+    .cam-label { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:20px; font-size:11px; color:#1D9E75; letter-spacing:2px; }
+    .right { display:flex; flex-direction:column; gap:16px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .card { background:#111; border:1px solid #222; border-radius:12px; padding:20px; }
+    .card .label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px; }
+    .card .value { font-size:36px; font-weight:600; }
+    .card .sub { font-size:12px; color:#555; margin-top:4px; }
+    .alert-box { background:#111; border:1px solid #222; border-radius:12px; padding:20px; }
+    .alert-box .state { font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; color:#888; }
+    .alert-box .message { font-size:16px; font-weight:400; line-height:1.5; }
+    .alert-box.warn .message { color:#EF9F27; }
+    .alert-box.danger .message { color:#E24B4A; }
+    .alert-box.good .message { color:#1D9E75; }
+    .tab-box { background:#111; border:1px solid #222; border-radius:12px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .tab-left .tab-title { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px; }
+    .tab-left .tab-app { font-size:13px; color:#ccc; }
+    .tab-right { text-align:right; }
+    .tab-right .tab-count { font-size:28px; font-weight:600; color:#EF9F27; }
+    .tab-right .tab-sub { font-size:11px; color:#555; }
+    .tab-status { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; letter-spacing:2px; margin-top:6px; background:#1a1a1a; color:#666; }
+    .bottom-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+    .bars { background:#111; border:1px solid #222; border-radius:12px; padding:20px; }
+    .section-label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; }
+    .bar-track { background:#1a1a1a; border-radius:4px; height:8px; margin-bottom:14px; }
+    .bar-fill { height:8px; border-radius:4px; transition:width 1s ease; }
+    .bar-row { display:flex; justify-content:space-between; margin-bottom:6px; }
+    .bar-name { font-size:12px; color:#888; }
+    .bar-num { font-size:12px; color:#fff; font-weight:500; }
+    .graph-box { background:#111; border:1px solid #222; border-radius:12px; padding:20px; margin-bottom:20px; }
+    .heatmap-box { background:#111; border:1px solid #222; border-radius:12px; padding:20px; }
+    .heatmap-grid { display:flex; gap:4px; flex-wrap:wrap; margin-top:10px; min-height:40px; }
+    .heatmap-cell { width:36px; height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; color:rgba(255,255,255,0.8); font-weight:600; position:relative; cursor:default; transition:transform .2s; }
+    .heatmap-cell:hover { transform:scale(1.2); z-index:10; }
+    .heatmap-cell .tip { display:none; position:absolute; bottom:42px; left:50%; transform:translateX(-50%); background:#222; border:1px solid #333; padding:4px 8px; border-radius:6px; font-size:10px; white-space:nowrap; z-index:20; }
+    .heatmap-cell:hover .tip { display:block; }
+  </style>
+</head>
+<body>
+  <h1>⬡ FocusMirror</h1>
+
+  <div class="burnout-banner" id="burnout-banner"></div>
+
+  <div class="main">
+    <div class="cam-wrap">
+      <img src="/video" alt="webcam"/>
+      <div class="cam-label">● LIVE</div>
+    </div>
+    <div class="right">
+      <div class="grid">
+        <div class="card">
+          <div class="label">Focus Score</div>
+          <div class="value" id="score-val" style="color:#1D9E75">--</div>
+          <div class="sub">out of 100</div>
+        </div>
+        <div class="card">
+          <div class="label">Blink Rate</div>
+          <div class="value" id="bpm-val" style="color:#185FA5">--</div>
+          <div class="sub">per minute</div>
+        </div>
+        <div class="card">
+          <div class="label">Posture</div>
+          <div class="value" id="posture-val" style="color:#BA7517">--</div>
+          <div class="sub">score</div>
+        </div>
+        <div class="card">
+          <div class="label">Session</div>
+          <div class="value" id="session-val" style="color:#888">--</div>
+          <div class="sub">minutes</div>
+        </div>
+      </div>
+      <div class="alert-box good" id="alert-box">
+        <div class="state" id="state-label">STARTING</div>
+        <div class="message" id="rec-text">Loading sensors...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-box">
+    <div class="tab-left">
+      <div class="tab-title">Active Window</div>
+      <div class="tab-app" id="current-app">Detecting...</div>
+      <div class="tab-status" id="tab-status">MONITORING</div>
+    </div>
+    <div class="tab-right">
+      <div class="tab-count" id="switch-count">0</div>
+      <div class="tab-sub">switches / hour</div>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="bars">
+      <div class="section-label">Live Metrics</div>
+      <div class="bar-row"><span class="bar-name">Focus Score</span><span class="bar-num" id="b-score">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bf-score" style="width:0%;background:#1D9E75"></div></div>
+      <div class="bar-row"><span class="bar-name">Posture</span><span class="bar-num" id="b-posture">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bf-posture" style="width:0%;background:#185FA5"></div></div>
+      <div class="bar-row"><span class="bar-name">Blink Health</span><span class="bar-num" id="b-blink">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bf-blink" style="width:0%;background:#BA7517"></div></div>
+      <div class="bar-row"><span class="bar-name">Focus Stability</span><span class="bar-num" id="b-switch">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="bf-switch" style="width:100%;background:#EF9F27"></div></div>
+    </div>
+    <div class="bars">
+      <div class="section-label">Micro Expression</div>
+      <div class="value" id="expr-main" style="font-size:20px;margin-bottom:16px;color:#fff">Detecting...</div>
+      <div class="bar-row"><span class="bar-name">😤 Stress</span><span class="bar-num" id="e-stress">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="ef-stress" style="width:0%;background:#E24B4A"></div></div>
+      <div class="bar-row"><span class="bar-name">😕 Confusion</span><span class="bar-num" id="e-confusion">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="ef-confusion" style="width:0%;background:#EF9F27"></div></div>
+      <div class="bar-row"><span class="bar-name">😶 Zoned Out</span><span class="bar-num" id="e-zoneout">0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="ef-zoneout" style="width:0%;background:#666"></div></div>
+    </div>
+  </div>
+
+  <div class="graph-box">
+    <div class="section-label">Focus Trend — Live</div>
+    <canvas id="focusChart" height="70"></canvas>
+  </div>
+
+  <div class="heatmap-box">
+    <div class="section-label">Focus Heatmap</div>
+    <div style="font-size:11px;color:#444;margin-bottom:8px;">🟢 High &nbsp; 🟡 Medium &nbsp; 🔴 Low — hover for details</div>
+    <div class="heatmap-grid" id="heatmap-grid">
+      <div style="color:#333;font-size:12px;padding:10px 0;">Heatmap builds every 10 seconds...</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    const scoreHistory = [];
+    const timeLabels   = [];
+    const ctx = document.getElementById('focusChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: timeLabels,
+        datasets: [{
+          data: scoreHistory,
+          borderColor: '#1D9E75',
+          backgroundColor: 'rgba(29,158,117,0.08)',
+          fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true, animation: false,
+        plugins: { legend: { display:false } },
+        scales: {
+          x: { grid:{display:false}, ticks:{color:'#444',font:{size:10}} },
+          y: { min:0, max:100, grid:{color:'rgba(255,255,255,0.05)'},
+               ticks:{color:'#444',font:{size:10},stepSize:25} }
+        }
+      }
+    });
+
+    function scoreColor(s) {
+      return s >= 70 ? '#1D9E75' : s >= 45 ? '#EF9F27' : '#E24B4A';
+    }
+
+    function updateHeatmap(data) {
+      if (!data || data.length === 0) return;
+      const grid = document.getElementById('heatmap-grid');
+      grid.innerHTML = '';
+      data.forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'heatmap-cell';
+        cell.style.background = scoreColor(d.score);
+        cell.style.opacity = 0.4 + (d.score / 100) * 0.6;
+        cell.innerHTML = d.score +
+          `<div class="tip">${d.minute}min · Score: ${d.score}</div>`;
+        grid.appendChild(cell);
+      });
+    }
+
+    const src = new EventSource('/data');
+    src.onmessage = e => {
+      const d = JSON.parse(e.data);
+
+      document.getElementById('score-val').textContent    = d.score;
+      document.getElementById('bpm-val').textContent      = d.bpm;
+      document.getElementById('posture-val').textContent  = d.posture;
+      document.getElementById('session-val').textContent  = d.session_minutes;
+      document.getElementById('state-label').textContent  = d.state;
+      document.getElementById('rec-text').textContent     = d.recommendation;
+      document.getElementById('switch-count').textContent = d.switches;
+      document.getElementById('current-app').textContent  = d.current_app || 'Detecting...';
+      document.getElementById('tab-status').textContent   = d.tab_status;
+
+      document.getElementById('expr-main').textContent    = d.expression || 'Detecting...';
+      document.getElementById('e-stress').textContent     = d.stress || 0;
+      document.getElementById('e-confusion').textContent  = d.confusion || 0;
+      document.getElementById('e-zoneout').textContent    = d.zoneout || 0;
+      document.getElementById('ef-stress').style.width    = (d.stress||0) + '%';
+      document.getElementById('ef-confusion').style.width = (d.confusion||0) + '%';
+      document.getElementById('ef-zoneout').style.width   = (d.zoneout||0) + '%';
+
+      scoreHistory.push(d.score);
+      timeLabels.push(new Date().toLocaleTimeString());
+      if (scoreHistory.length > 60) { scoreHistory.shift(); timeLabels.shift(); }
+      chart.update();
+
+      updateHeatmap(d.heatmap);
+
+      document.getElementById('b-score').textContent    = d.score;
+      document.getElementById('b-posture').textContent  = d.posture;
+      document.getElementById('bf-score').style.width   = d.score + '%';
+      document.getElementById('bf-posture').style.width = d.posture + '%';
+      const bh = Math.max(0, 100 - Math.abs(d.bpm - 15) * 6);
+      document.getElementById('b-blink').textContent   = bh;
+      document.getElementById('bf-blink').style.width  = bh + '%';
+      const sh = Math.max(0, 100 - d.switches * 3);
+      document.getElementById('b-switch').textContent  = sh;
+      document.getElementById('bf-switch').style.width = sh + '%';
+
+      const box = document.getElementById('alert-box');
+      box.className = 'alert-box';
+      if (d.score >= 70)      box.classList.add('good');
+      else if (d.score >= 45) box.classList.add('warn');
+      else                    box.classList.add('danger');
+      document.getElementById('score-val').style.color = scoreColor(d.score);
+
+      const banner = document.getElementById('burnout-banner');
+      if (d.burnout_mins !== null && d.burnout_mins !== undefined) {
+        banner.style.display = 'block';
+        if (d.burnout_mins === 0) {
+          banner.textContent = '🚨 BURNOUT DETECTED — Stop studying now. Take a 20 min break.';
+        } else {
+          banner.textContent = `⚠ At this rate, burnout in ${d.burnout_mins} minute${d.burnout_mins===1?'':'s'} — consider a break soon.`;
+        }
+      } else {
+        banner.style.display = 'none';
+      }
+    };
+
+    src.onerror = () => {
+      document.getElementById('rec-text').textContent = 'Reconnecting...';
+    };
+  </script>
+</body>
+</html>
