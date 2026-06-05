@@ -4,6 +4,7 @@ import json
 from flask import Flask, Response, render_template, jsonify, request
 from scorer import FocusScorer
 from tab_monitor import TabMonitor
+from leaderboard import save_score, get_leaderboard, get_rank
 
 app = Flask(__name__)
 scorer = FocusScorer()
@@ -15,10 +16,12 @@ latest_data = {
     "session_minutes": 0, "switches": 0, "burnout_mins": None,
     "tab_status": "MONITORING", "current_app": "",
     "expression": "Detecting...", "stress": 0, "confusion": 0,
-    "zoneout": 0, "heatmap": []
+    "zoneout": 0, "heatmap": [], "leaderboard": []
 }
 heatmap_data = []
 last_heatmap = time.time()
+current_name = "Anonymous"
+session_best_score = 0
 
 def tab_loop():
     while True:
@@ -36,9 +39,35 @@ def tab_loop():
 threading.Thread(target=tab_loop, daemon=True).start()
 print("Server ready!")
 
+@app.route('/reset', methods=['POST'])
+def reset():
+    global scorer, heatmap_data, last_heatmap, session_best_score, current_name
+    data = request.json or {}
+    name = data.get('name', 'Anonymous').strip()
+    if name:
+        current_name = name
+
+    # Save score to leaderboard before resetting
+    if session_best_score > 0:
+        save_score(current_name, session_best_score, scorer.session_minutes())
+
+    scorer = FocusScorer()
+    heatmap_data = []
+    last_heatmap = time.time()
+    session_best_score = 0
+
+    latest_data.update({
+        "score": 0, "bpm": 0, "posture": 100,
+        "state": "STARTING", "recommendation": "Initializing...",
+        "session_minutes": 0, "switches": 0, "burnout_mins": None,
+        "expression": "Detecting...", "stress": 0, "confusion": 0,
+        "zoneout": 0, "heatmap": [], "leaderboard": get_leaderboard()
+    })
+    return jsonify({"status": "reset", "leaderboard": get_leaderboard()})
+
 @app.route('/sensor', methods=['POST'])
 def sensor():
-    global last_heatmap, heatmap_data
+    global last_heatmap, heatmap_data, session_best_score
     try:
         d = request.json
         bpm = d.get('bpm', 0)
@@ -48,48 +77,48 @@ def sensor():
         stress = d.get('stress', 0)
         confusion = d.get('confusion', 0)
         zoneout = d.get('zoneout', 0)
-
         if ear < 0.22:
             scorer.record_blink()
-
         switches = tab_monitor.switches_per_hour()
         score = scorer.compute_score(posture, switches)
         burnout = scorer.predict_burnout()
         burnout_mins = scorer.burnout_countdown()
 
+        # Track best score this session
+        if score > session_best_score:
+            session_best_score = score
+
         if time.time() - last_heatmap >= 10:
-            heatmap_data.append({
-                "minute": round(scorer.session_minutes(), 1),
-                "score": score
-            })
+            heatmap_data.append({"minute": round(scorer.session_minutes(), 1), "score": score})
             if len(heatmap_data) > 60:
                 heatmap_data.pop(0)
             last_heatmap = time.time()
 
         rec = burnout or scorer.get_recommendation(score, switches, tab_monitor.is_distracted)
+        rank = get_rank(score)
 
         latest_data.update({
-            "score": score,
-            "bpm": bpm,
-            "posture": posture,
-            "state": scorer.get_state(score),
-            "recommendation": rec,
+            "score": score, "bpm": bpm, "posture": posture,
+            "state": scorer.get_state(score), "recommendation": rec,
             "burnout_mins": burnout_mins,
             "session_minutes": scorer.session_minutes(),
-            "switches": switches,
-            "tab_status": tab_monitor.get_status(),
+            "switches": switches, "tab_status": tab_monitor.get_status(),
             "current_app": tab_monitor.current_app[:40],
-            "heatmap": heatmap_data,
-            "expression": expression,
-            "stress": stress,
-            "confusion": confusion,
-            "zoneout": zoneout
+            "heatmap": heatmap_data, "expression": expression,
+            "stress": stress, "confusion": confusion, "zoneout": zoneout,
+            "leaderboard": get_leaderboard(),
+            "rank": rank,
+            "best_score": session_best_score,
+            "current_name": current_name
         })
-
         return jsonify(latest_data)
     except Exception as e:
         print(f"Sensor error: {e}")
         return jsonify({"error": str(e)}), 500
+
+@app.route('/leaderboard')
+def leaderboard():
+    return jsonify(get_leaderboard())
 
 @app.route('/data')
 def data():
@@ -104,7 +133,7 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    print("FocusMirror running at http://127.0.0.1:5000")
     import os
-port = int(os.environ.get('PORT', 5000))
-app.run(debug=False, threaded=True, host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 5000))
+    print("FocusMirror running at http://127.0.0.1:5000")
+    app.run(debug=False, threaded=True, host='0.0.0.0', port=port)
