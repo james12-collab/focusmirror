@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+html = open('templates/index.html', 'w', encoding='utf-8')
+html.write("""<!DOCTYPE html>
 <html>
 <head>
   <title>FocusMirror</title>
@@ -390,4 +391,6 @@
     }
   </script>
 </body>
-</html>
+</html>""")
+html.close()
+print("index.html written successfully!")
