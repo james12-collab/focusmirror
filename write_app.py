@@ -6,6 +6,7 @@ from flask import Flask, Response, render_template, jsonify, request
 from scorer import FocusScorer
 from tab_monitor import TabMonitor
 from leaderboard import save_score, get_leaderboard, get_rank
+from badges import check_badges, get_all_badges
 
 app = Flask(__name__)
 scorer = FocusScorer()
@@ -17,12 +18,19 @@ latest_data = {
     "session_minutes": 0, "switches": 0, "burnout_mins": None,
     "tab_status": "MONITORING", "current_app": "",
     "expression": "Detecting...", "stress": 0, "confusion": 0,
-    "zoneout": 0, "heatmap": [], "leaderboard": []
+    "zoneout": 0, "heatmap": [], "leaderboard": [],
+    "badges": [], "new_badge": None, "all_badges": get_all_badges()
 }
 heatmap_data = []
 last_heatmap = time.time()
 current_name = "Anonymous"
 session_best_score = 0
+earned_badges = []
+
+# Consecutive tracking
+consecutive_good_seconds = 0
+consecutive_posture_seconds = 0
+consecutive_blink_seconds = 0
 
 def tab_loop():
     while True:
@@ -42,33 +50,37 @@ print("Server ready!")
 
 @app.route('/reset', methods=['POST'])
 def reset():
-    global scorer, heatmap_data, last_heatmap, session_best_score, current_name
+    global scorer, heatmap_data, last_heatmap, session_best_score
+    global current_name, earned_badges
+    global consecutive_good_seconds, consecutive_posture_seconds, consecutive_blink_seconds
     data = request.json or {}
     name = data.get('name', 'Anonymous').strip()
     if name:
         current_name = name
-
-    # Save score to leaderboard before resetting
     if session_best_score > 0:
         save_score(current_name, session_best_score, scorer.session_minutes())
-
     scorer = FocusScorer()
     heatmap_data = []
     last_heatmap = time.time()
     session_best_score = 0
-
+    earned_badges = []
+    consecutive_good_seconds = 0
+    consecutive_posture_seconds = 0
+    consecutive_blink_seconds = 0
     latest_data.update({
         "score": 0, "bpm": 0, "posture": 100,
         "state": "STARTING", "recommendation": "Initializing...",
         "session_minutes": 0, "switches": 0, "burnout_mins": None,
         "expression": "Detecting...", "stress": 0, "confusion": 0,
-        "zoneout": 0, "heatmap": [], "leaderboard": get_leaderboard()
+        "zoneout": 0, "heatmap": [], "leaderboard": get_leaderboard(),
+        "badges": [], "new_badge": None, "all_badges": get_all_badges()
     })
     return jsonify({"status": "reset", "leaderboard": get_leaderboard()})
 
 @app.route('/sensor', methods=['POST'])
 def sensor():
     global last_heatmap, heatmap_data, session_best_score
+    global consecutive_good_seconds, consecutive_posture_seconds, consecutive_blink_seconds
     try:
         d = request.json
         bpm = d.get('bpm', 0)
@@ -84,19 +96,52 @@ def sensor():
         score = scorer.compute_score(posture, switches)
         burnout = scorer.predict_burnout()
         burnout_mins = scorer.burnout_countdown()
-
-        # Track best score this session
         if score > session_best_score:
             session_best_score = score
 
+        # Update consecutive counters (called every 2 seconds)
+        if score >= 70:
+            consecutive_good_seconds += 2
+        else:
+            consecutive_good_seconds = 0
+
+        if posture >= 95:
+            consecutive_posture_seconds += 2
+        else:
+            consecutive_posture_seconds = 0
+
+        if 10 <= bpm <= 20:
+            consecutive_blink_seconds += 2
+        else:
+            consecutive_blink_seconds = 0
+
         if time.time() - last_heatmap >= 10:
-            heatmap_data.append({"minute": round(scorer.session_minutes(), 1), "score": score})
+            heatmap_data.append({
+                "minute": round(scorer.session_minutes(), 1),
+                "score": score
+            })
             if len(heatmap_data) > 60:
                 heatmap_data.pop(0)
             last_heatmap = time.time()
 
         rec = burnout or scorer.get_recommendation(score, switches, tab_monitor.is_distracted)
         rank = get_rank(score)
+
+        # Check badges
+        new_badges, updated_badges = check_badges(
+            score=score,
+            posture=posture,
+            bpm=bpm,
+            session_minutes=scorer.session_minutes(),
+            rank=rank,
+            best_score=session_best_score,
+            consecutive_good_minutes=consecutive_good_seconds/60,
+            consecutive_posture_minutes=consecutive_posture_seconds/60,
+            consecutive_blink_minutes=consecutive_blink_seconds/60,
+            earned_badges=earned_badges
+        )
+
+        new_badge = new_badges[0] if new_badges else None
 
         latest_data.update({
             "score": score, "bpm": bpm, "posture": posture,
@@ -110,7 +155,10 @@ def sensor():
             "leaderboard": get_leaderboard(),
             "rank": rank,
             "best_score": session_best_score,
-            "current_name": current_name
+            "current_name": current_name,
+            "badges": updated_badges,
+            "new_badge": new_badge,
+            "all_badges": get_all_badges()
         })
         return jsonify(latest_data)
     except Exception as e:
