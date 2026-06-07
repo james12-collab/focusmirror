@@ -25,8 +25,6 @@ last_heatmap = time.time()
 current_name = "Anonymous"
 session_best_score = 0
 earned_badges = []
-
-# Consecutive tracking
 consecutive_good_seconds = 0
 consecutive_posture_seconds = 0
 consecutive_blink_seconds = 0
@@ -46,6 +44,14 @@ def tab_loop():
 
 threading.Thread(target=tab_loop, daemon=True).start()
 print("Server ready!")
+
+@app.route('/')
+def landing():
+    return render_template('landing.html')
+
+@app.route('/app')
+def apppage():
+    return render_template('index.html')
 
 @app.route('/reset', methods=['POST'])
 def reset():
@@ -97,23 +103,18 @@ def sensor():
         burnout_mins = scorer.burnout_countdown()
         if score > session_best_score:
             session_best_score = score
-
-        # Update consecutive counters (called every 2 seconds)
         if score >= 70:
             consecutive_good_seconds += 2
         else:
             consecutive_good_seconds = 0
-
         if posture >= 95:
             consecutive_posture_seconds += 2
         else:
             consecutive_posture_seconds = 0
-
         if 10 <= bpm <= 20:
             consecutive_blink_seconds += 2
         else:
             consecutive_blink_seconds = 0
-
         if time.time() - last_heatmap >= 10:
             heatmap_data.append({
                 "minute": round(scorer.session_minutes(), 1),
@@ -122,26 +123,18 @@ def sensor():
             if len(heatmap_data) > 60:
                 heatmap_data.pop(0)
             last_heatmap = time.time()
-
         rec = burnout or scorer.get_recommendation(score, switches, tab_monitor.is_distracted)
         rank = get_rank(score)
-
-        # Check badges
         new_badges, updated_badges = check_badges(
-            score=score,
-            posture=posture,
-            bpm=bpm,
-            session_minutes=scorer.session_minutes(),
-            rank=rank,
+            score=score, posture=posture, bpm=bpm,
+            session_minutes=scorer.session_minutes(), rank=rank,
             best_score=session_best_score,
             consecutive_good_minutes=consecutive_good_seconds/60,
             consecutive_posture_minutes=consecutive_posture_seconds/60,
             consecutive_blink_minutes=consecutive_blink_seconds/60,
             earned_badges=earned_badges
         )
-
         new_badge = new_badges[0] if new_badges else None
-
         latest_data.update({
             "score": score, "bpm": bpm, "posture": posture,
             "state": scorer.get_state(score), "recommendation": rec,
@@ -151,12 +144,9 @@ def sensor():
             "current_app": tab_monitor.current_app[:40],
             "heatmap": heatmap_data, "expression": expression,
             "stress": stress, "confusion": confusion, "zoneout": zoneout,
-            "leaderboard": get_leaderboard(),
-            "rank": rank,
-            "best_score": session_best_score,
-            "current_name": current_name,
-            "badges": updated_badges,
-            "new_badge": new_badge,
+            "leaderboard": get_leaderboard(), "rank": rank,
+            "best_score": session_best_score, "current_name": current_name,
+            "badges": updated_badges, "new_badge": new_badge,
             "all_badges": get_all_badges()
         })
         return jsonify(latest_data)
@@ -164,7 +154,9 @@ def sensor():
         print(f"Sensor error: {e}")
         return jsonify({"error": str(e)}), 500
 
-
+@app.route('/leaderboard')
+def leaderboard():
+    return jsonify(get_leaderboard())
 
 @app.route('/reset-leaderboard', methods=['POST'])
 def reset_leaderboard_route():
@@ -179,10 +171,6 @@ def data():
             yield f"data: {json.dumps(latest_data)}\n\n"
             time.sleep(1)
     return Response(generate(), mimetype='text/event-stream')
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 if __name__ == '__main__':
     import os
