@@ -7,6 +7,7 @@ from scorer import FocusScorer
 from tab_monitor import TabMonitor
 from leaderboard import save_score, get_leaderboard, get_rank
 from badges import check_badges, get_all_badges
+from pattern_memory import save_session, get_patterns
 
 app = Flask(__name__)
 scorer = FocusScorer()
@@ -54,6 +55,11 @@ def landing():
 def apppage():
     return render_template('index.html')
 
+@app.route('/patterns')
+def patterns():
+    data = get_patterns()
+    return jsonify(data or {})
+
 @app.route('/reset', methods=['POST'])
 def reset():
     global scorer, heatmap_data, last_heatmap, session_best_score
@@ -65,6 +71,7 @@ def reset():
         current_name = name
     if session_best_score > 0:
         save_score(current_name, session_best_score, scorer.session_minutes())
+        save_session(current_name, session_best_score, scorer.session_minutes())
     scorer = FocusScorer()
     heatmap_data = []
     last_heatmap = time.time()
@@ -96,7 +103,6 @@ def sensor():
         confusion = d.get('confusion', 0)
         boreout = d.get('boreout', 0)
         engagement = d.get('engagement', 50)
-        
         if ear < 0.22:
             scorer.record_blink()
         switches = tab_monitor.switches_per_hour()
@@ -181,4 +187,4 @@ if __name__ == '__main__':
     app.run(debug=False, threaded=True, host='0.0.0.0', port=port)
 """)
 code.close()
-print("app.py cleaned!")
+print("app.py written!")
