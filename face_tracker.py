@@ -1,7 +1,9 @@
 import cv2
-from mediapipe.python.solutions import face_mesh as mp_face_mesh
+import mediapipe as mp
 import numpy as np
+from emotion_detector import detect_emotion
 
+mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(max_num_faces=1, min_detection_confidence=0.7)
 
 LEFT_EYE  = [362, 385, 387, 263, 373, 380]
@@ -32,12 +34,18 @@ while True:
         if ear < 0.22 and ear_prev >= 0.22:
             blink_count += 1
 
+        # Get emotions
+        stress, confusion, boreout, engagement = detect_emotion(lm, w, h)
+
         ear_prev = ear
 
         cv2.putText(frame, f"EAR: {ear:.2f}  Blinks: {blink_count}",
-                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
+        cv2.putText(frame, f"Stress: {stress}  Confusion: {confusion}  Boreout: {boreout}  Engagement: {engagement}",
+                    (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
 
-    cv2.imshow("Blink Detector", frame)
+    cv2.imshow('FocusMirror - Face Tracker', frame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

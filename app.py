@@ -16,8 +16,8 @@ latest_data = {
     "state": "STARTING", "recommendation": "Initializing...",
     "session_minutes": 0, "switches": 0, "burnout_mins": None,
     "tab_status": "MONITORING", "current_app": "",
-    "expression": "Detecting...", "stress": 0, "confusion": 0,
-    "zoneout": 0, "heatmap": [], "leaderboard": [],
+    "stress": 0, "confusion": 0, "boreout": 0, "engagement": 0,
+    "heatmap": [], "leaderboard": [],
     "badges": [], "new_badge": None, "all_badges": get_all_badges()
 }
 heatmap_data = []
@@ -76,8 +76,8 @@ def reset():
         "score": 0, "bpm": 0, "posture": 100,
         "state": "STARTING", "recommendation": "Initializing...",
         "session_minutes": 0, "switches": 0, "burnout_mins": None,
-        "expression": "Detecting...", "stress": 0, "confusion": 0,
-        "zoneout": 0, "heatmap": [], "leaderboard": get_leaderboard(),
+        "stress": 0, "confusion": 0, "boreout": 0, "engagement": 0,
+        "heatmap": [], "leaderboard": get_leaderboard(),
         "badges": [], "new_badge": None, "all_badges": get_all_badges()
     })
     return jsonify({"status": "reset", "leaderboard": get_leaderboard()})
@@ -91,10 +91,11 @@ def sensor():
         bpm = d.get('bpm', 0)
         posture = d.get('posture', 100)
         ear = d.get('ear', 0.3)
-        expression = d.get('expression', 'Neutral')
         stress = d.get('stress', 0)
         confusion = d.get('confusion', 0)
-        zoneout = d.get('zoneout', 0)
+        boreout = d.get('boreout', 0)
+        engagement = d.get('engagement', 50)
+        
         if ear < 0.22:
             scorer.record_blink()
         switches = tab_monitor.switches_per_hour()
@@ -142,8 +143,8 @@ def sensor():
             "session_minutes": scorer.session_minutes(),
             "switches": switches, "tab_status": tab_monitor.get_status(),
             "current_app": tab_monitor.current_app[:40],
-            "heatmap": heatmap_data, "expression": expression,
-            "stress": stress, "confusion": confusion, "zoneout": zoneout,
+            "heatmap": heatmap_data,
+            "stress": stress, "confusion": confusion, "boreout": boreout, "engagement": engagement,
             "leaderboard": get_leaderboard(), "rank": rank,
             "best_score": session_best_score, "current_name": current_name,
             "badges": updated_badges, "new_badge": new_badge,

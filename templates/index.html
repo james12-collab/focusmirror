@@ -111,6 +111,38 @@
     .badge-popup-desc { font-size:13px; color:#888; margin-bottom:16px; line-height:1.5; }
     .badge-popup-btn { padding:10px 24px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
     .badge-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:none; }
+
+    .notes-box { background:#111; border:1px solid #222; border-radius:12px; padding:16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; }
+    .notes-title { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; }
+    .notes-textarea { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:12px; color:#fff; font-family:'Segoe UI',sans-serif; font-size:13px; resize:vertical; min-height:100px; outline:none; }
+    .notes-textarea:focus { border-color:#1D9E75; }
+    .notes-textarea::placeholder { color:#444; }
+    .notes-buttons { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+    .notes-btn { padding:10px; background:#1a1a1a; border:1px solid #333; color:#888; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; }
+    .notes-btn:hover { border-color:#1D9E75; color:#1D9E75; }
+    .notes-btn.loading { opacity:0.5; cursor:not-allowed; }
+    .notes-output-box { background:#0d2e1f; border:1px solid #1D9E75; border-radius:8px; padding:12px; margin-top:12px; font-size:13px; line-height:1.6; color:#fff; max-height:200px; overflow-y:auto; }
+    .notes-output-label { font-size:9px; color:#1D9E75; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px; }
+    .notes-output-empty { color:#444; font-style:italic; }
+
+    .youtube-section { background:#111; border:1px solid #222; border-radius:12px; padding:16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; }
+    .youtube-title { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; }
+    .youtube-input-group { display:flex; gap:8px; }
+    .youtube-input { flex:1; background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:10px 14px; color:#fff; font-size:13px; outline:none; }
+    .youtube-input:focus { border-color:#1D9E75; }
+    .youtube-input::placeholder { color:#444; }
+    .youtube-btn { padding:10px 16px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:opacity .2s; }
+    .youtube-btn:hover { opacity:0.85; }
+    .youtube-btn.loading { opacity:0.5; cursor:not-allowed; }
+    .youtube-transcript-box { background:#0d2e1f; border:1px solid #1D9E75; border-radius:8px; padding:12px; margin-top:12px; font-size:12px; line-height:1.5; color:#fff; max-height:150px; overflow-y:auto; }
+
+    .emotion-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; }
+    .emotion-card { background:#111; border:1px solid #222; border-radius:12px; padding:14px; text-align:center; }
+    .emotion-card .label { font-size:9px; color:#666; text-transform:uppercase; letter-spacing:2px; margin-bottom:5px; }
+    .emotion-icon { font-size:24px; margin-bottom:6px; }
+    .emotion-value { font-size:24px; font-weight:600; margin-bottom:4px; }
+    .emotion-bar { height:4px; background:#1a1a1a; border-radius:2px; margin-top:8px; overflow:hidden; }
+    .emotion-fill { height:4px; border-radius:2px; transition:width .5s ease; }
 </style>
 </head>
 <body>
@@ -214,7 +246,62 @@
     <button class="badge-popup-btn" onclick="closeBadgePopup()">Awesome! 🎉</button>
   </div>
 
-  <div class="badges-box">
+  
+  
+  <!-- YouTube removed -->
+  <div style="display:none">
+    <div class="youtube-title">🎥 YouTube Note Extractor</div>
+    <div class="youtube-input-group">
+      <input class="youtube-input" id="youtube-url" type="text" placeholder="Paste YouTube URL...">
+      <button class="youtube-btn" onclick="extractYouTubeTranscript()">Extract</button>
+    </div>
+    <div class="youtube-transcript-box" id="youtube-transcript" style="display:none;"></div>
+  </div>
+
+<!-- Notes removed -->
+  <div style="display:none">
+    <div class="notes-title">📝 AI Note Tracker</div>
+    <textarea class="notes-textarea" id="notes-input" placeholder="Paste your notes here... then click a button to process"></textarea>
+    <div class="notes-buttons">
+      <button class="notes-btn" onclick="processNotes('basic')">📝 Basic</button>
+      <button class="notes-btn" onclick="processNotes('summarized')">⚡ Summarized</button>
+      <button class="notes-btn" onclick="processNotes('detailed')">📊 Detailed</button>
+    </div>
+    <div class="notes-output-box">
+      <div class="notes-output-label" id="notes-output-label"></div>
+      <div id="notes-output" class="notes-output-empty">Output will appear here...</div>
+    </div>
+  </div>
+
+
+  <div class="emotion-grid">
+    <div class="emotion-card">
+      <div class="label">Stress</div>
+      <div class="emotion-icon">😟</div>
+      <div class="emotion-value" id="stress-val">0</div>
+      <div class="emotion-bar"><div class="emotion-fill" id="stress-bar" style="width:0%;background:#E24B4A"></div></div>
+    </div>
+    <div class="emotion-card">
+      <div class="label">Confusion</div>
+      <div class="emotion-icon">😕</div>
+      <div class="emotion-value" id="confusion-val">0</div>
+      <div class="emotion-bar"><div class="emotion-fill" id="confusion-bar" style="width:0%;background:#EF9F27"></div></div>
+    </div>
+    <div class="emotion-card">
+      <div class="label">Boreout</div>
+      <div class="emotion-icon">😐</div>
+      <div class="emotion-value" id="boreout-val">0</div>
+      <div class="emotion-bar"><div class="emotion-fill" id="boreout-bar" style="width:0%;background:#BA7517"></div></div>
+    </div>
+    <div class="emotion-card">
+      <div class="label">Engagement</div>
+      <div class="emotion-icon">😊</div>
+      <div class="emotion-value" id="engagement-val">0</div>
+      <div class="emotion-bar"><div class="emotion-fill" id="engagement-bar" style="width:0%;background:#1D9E75"></div></div>
+    </div>
+  </div>
+
+<div class="badges-box">
     <div class="section-label">🏅 Achievements</div>
     <div class="badges-grid" id="badges-grid"></div>
   </div>
@@ -308,6 +395,7 @@
       updateHeatmap(d.heatmap);
       updateLeaderboard(d.leaderboard,d.rank,d.best_score);
       updateBadges(d.all_badges, d.badges, d.new_badge);
+      updateEmotions(d.stress, d.confusion, d.boreout, d.engagement);
       const box=document.getElementById('alert-box');
       box.className='alert-box';
       if(d.score>=70)box.classList.add('good');
@@ -424,6 +512,18 @@
       document.getElementById('badge-overlay').style.display = 'none';
     }
 
+
+    function updateEmotions(stress, confusion, boreout, engagement) {
+      document.getElementById('stress-val').textContent = stress;
+      document.getElementById('stress-bar').style.width = stress + '%';
+      document.getElementById('confusion-val').textContent = confusion;
+      document.getElementById('confusion-bar').style.width = confusion + '%';
+      document.getElementById('boreout-val').textContent = boreout;
+      document.getElementById('boreout-bar').style.width = boreout + '%';
+      document.getElementById('engagement-val').textContent = engagement;
+      document.getElementById('engagement-bar').style.width = engagement + '%';
+    }
+
     function updateBadges(allBadges, earnedIds, newBadge) {
       const grid = document.getElementById('badges-grid');
       if (!allBadges) return;
@@ -436,6 +536,95 @@
       }).join('');
       if (newBadge) showBadgePopup(newBadge);
     }
+
+
+
+    async function extractYouTubeTranscript() {
+      const input = document.getElementById('youtube-url');
+      const url = input.value.trim();
+      const transcriptBox = document.getElementById('youtube-transcript');
+      const btn = event.target;
+      
+      if (!url) {
+        alert('Please enter a YouTube URL');
+        return;
+      }
+      
+      btn.classList.add('loading');
+      btn.disabled = true;
+      transcriptBox.textContent = 'Extracting transcript...';
+      transcriptBox.style.display = 'block';
+      
+      try {
+        const resp = await fetch('/youtube-transcript', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({url})
+        });
+        const data = await resp.json();
+        
+        if (data.error) {
+          transcriptBox.textContent = 'Error: ' + data.error;
+        } else if (data.text) {
+          transcriptBox.innerHTML = data.text.substring(0, 500) + '...';
+          document.getElementById('notes-input').value = data.text;
+          alert('✅ Transcript loaded! Now select a processing mode.');
+        }
+      } catch(e) {
+        transcriptBox.textContent = 'Error: ' + e.message;
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+
+    async function processNotes(mode) {
+      const textarea = document.getElementById('notes-input');
+      const output = document.getElementById('notes-output');
+      const label = document.getElementById('notes-output-label');
+      const text = textarea.value.trim();
+      
+      if (!text) {
+        alert('Please enter some notes first!');
+        return;
+      }
+      
+      const buttons = document.querySelectorAll('.notes-btn');
+      buttons.forEach(b => b.classList.add('loading'));
+      
+      output.textContent = 'Processing...';
+      output.className = '';
+      
+      try {
+        const resp = await fetch('/process-notes', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({text, mode})
+        });
+        const data = await resp.json();
+        
+        if (data.error) {
+          output.textContent = 'Error: ' + data.error;
+          output.className = 'notes-output-empty';
+        } else {
+          const modeNames = {
+            'basic': '📝 Key Points (Basic)',
+            'summarized': '⚡ One-Line Summary',
+            'detailed': '📊 Detailed Breakdown'
+          };
+          label.textContent = modeNames[mode];
+          output.innerHTML = data.result.replace(/\n/g, '<br>');
+          output.className = '';
+        }
+      } catch(e) {
+        output.textContent = 'Error: ' + e.message;
+        output.className = 'notes-output-empty';
+      } finally {
+        buttons.forEach(b => b.classList.remove('loading'));
+      }
+    }
+
 
     async function init(){
       try{
