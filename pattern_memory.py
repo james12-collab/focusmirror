@@ -13,6 +13,9 @@ def load_sessions():
     except:
         return []
 
+def today():
+    return time.strftime("%Y-%m-%d")
+
 def get_grade(score):
     if score >= 90: return "A+"
     elif score >= 80: return "A"
@@ -20,6 +23,32 @@ def get_grade(score):
     elif score >= 60: return "C"
     elif score >= 50: return "D"
     else: return "F"
+
+def calc_streak(sessions):
+    if not sessions:
+        return 0
+    dates = sorted(set(s['date'] for s in sessions), reverse=True)
+    if not dates:
+        return 0
+    streak = 0
+    prev = None
+    for d in dates:
+        if prev is None:
+            if d == today():
+                streak = 1
+                prev = d
+            else:
+                break
+        else:
+            from datetime import datetime, timedelta
+            d1 = datetime.strptime(prev, "%Y-%m-%d")
+            d2 = datetime.strptime(d, "%Y-%m-%d")
+            if (d1 - d2).days == 1:
+                streak += 1
+                prev = d
+            else:
+                break
+    return streak
 
 def save_session(name, score, duration_minutes):
     sessions = load_sessions()
@@ -33,7 +62,7 @@ def save_session(name, score, duration_minutes):
         "name": name,
         "score": score,
         "duration": round(duration_minutes, 1),
-        "date": time.strftime("%Y-%m-%d"),
+        "date": today(),
         "time": time.strftime("%I:%M %p"),
         "time_of_day": time_of_day,
         "hour": hour,
@@ -43,6 +72,7 @@ def save_session(name, score, duration_minutes):
     sessions = sessions[-100:]
     with open(SESSIONS_FILE, 'w') as f:
         json.dump(sessions, f)
+    return calc_streak(sessions)
 
 def get_patterns():
     sessions = load_sessions()
@@ -61,11 +91,13 @@ def get_patterns():
         trend = "improving" if recent[-1]['score'] > recent[0]['score'] else "declining"
     else:
         trend = "not enough data"
+    streak = calc_streak(sessions)
     return {
         "total_sessions": len(sessions),
         "best_time": best_time,
         "avg_duration": round(avg_duration, 1),
         "trend": trend,
         "recent_scores": [s['score'] for s in recent],
-        "avg_score": round(sum(s['score'] for s in sessions) / len(sessions), 1)
+        "avg_score": round(sum(s['score'] for s in sessions) / len(sessions), 1),
+        "streak": streak
     }
