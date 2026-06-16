@@ -7,7 +7,7 @@ from scorer import FocusScorer
 from tab_monitor import TabMonitor
 from leaderboard import save_score, get_leaderboard, get_rank
 from badges import check_badges, get_all_badges
-from pattern_memory import save_session, get_patterns
+from pattern_memory import save_session, get_patterns, load_sessions
 
 app = Flask(__name__)
 scorer = FocusScorer()
@@ -54,6 +54,18 @@ def landing():
 @app.route('/app')
 def apppage():
     return render_template('index.html')
+
+@app.route('/dna')
+def dna():
+    return render_template('dna.html')
+
+@app.route('/stats')
+def stats():
+    return render_template('stats.html')
+
+@app.route('/api/sessions')
+def api_sessions():
+    return jsonify(load_sessions())
 
 @app.route('/patterns')
 def patterns():

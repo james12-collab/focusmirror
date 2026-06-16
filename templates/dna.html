@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus DNA — FocusMirror</title>
+  <meta name="theme-color" content="#1D9E75">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--green:#1D9E75;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;--text:#fff;--muted:#888;}
+    body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;padding:0 0 40px;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:600px;margin:0 auto;}
+    .nav-logo{font-size:16px;font-weight:700;color:var(--green);}
+    .nav-logo span{color:#fff;}
+    .nav-links{display:flex;gap:12px;}
+    .nav-link{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
+    .nav-link:hover{color:#fff;border-color:#555;}
+    .nav-link.active{color:var(--green);border-color:var(--green);}
+    .page{max-width:600px;margin:0 auto;padding:0 16px;}
+    .dna-hero{text-align:center;padding:32px 0 24px;}
+    .personality-bubble{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#0d2e1f,#1D9E75);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 16px;}
+    .personality-type{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;}
+    .personality-desc{font-size:13px;color:var(--muted);line-height:1.6;max-width:280px;margin:0 auto 8px;}
+    .personality-sessions{font-size:11px;color:#333;margin-top:6px;}
+    .section{margin-bottom:20px;}
+    .section-tag{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;}
+    .records-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+    .record-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+    .record-icon{font-size:22px;margin-bottom:8px;}
+    .record-val{font-size:26px;font-weight:800;color:var(--green);margin-bottom:4px;}
+    .record-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;}
+    .chart-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
+    .style-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;}
+    .style-icon{font-size:36px;}
+    .style-name{font-size:16px;font-weight:700;margin-bottom:6px;}
+    .style-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+    .no-data{text-align:center;padding:60px 20px;color:var(--muted);}
+    .no-data-icon{font-size:48px;margin-bottom:16px;}
+    .no-data h2{font-size:18px;color:#fff;margin-bottom:8px;}
+    .no-data p{font-size:13px;line-height:1.6;}
+    .go-btn{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--green);color:#000;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px;}
+    .streak-card{background:linear-gradient(135deg,#0d2e1f,#111);border:1px solid var(--green);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center;}
+    .streak-num{font-size:48px;font-weight:800;color:var(--green);}
+    .streak-label{font-size:12px;color:var(--muted);margin-top:4px;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">Focus<span>Mirror</span></div>
+    <div class="nav-links">
+      <a href="/app" class="nav-link">App</a>
+      <a href="/stats" class="nav-link">Stats</a>
+      <a href="/dna" class="nav-link active">DNA</a>
+    </div>
+  </nav>
+
+  <div class="page" id="page">
+    <div class="no-data" id="no-data" style="display:none">
+      <div class="no-data-icon">🧬</div>
+      <h2>No Focus DNA Yet</h2>
+      <p>Complete at least 2 study sessions<br>to unlock your Focus DNA profile.</p>
+      <a href="/app" class="go-btn">Start Studying →</a>
+    </div>
+
+    <div id="dna-content" style="display:none">
+      <div style="font-size:18px;font-weight:700;color:#fff;margin:16px 0 4px;text-align:center" id="dna-username">My Focus DNA</div>
+      <div class="dna-hero">
+        <div class="personality-bubble" id="pers-icon">🌅</div>
+        <div class="personality-type" id="pers-type">Loading...</div>
+        <div class="personality-desc" id="pers-desc">Analyzing your focus patterns...</div>
+        <div class="personality-sessions" id="pers-sessions"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-tag">Focus Style</div>
+        <div class="style-card">
+          <div class="style-icon" id="style-icon">📏</div>
+          <div>
+            <div class="style-name" id="style-name">Calculating...</div>
+            <div class="style-desc" id="style-desc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-tag">Personal Records</div>
+        <div class="records-grid">
+          <div class="record-card">
+            <div class="record-icon">🏆</div>
+            <div class="record-val" id="rec-best">--</div>
+            <div class="record-label">Best Score</div>
+          </div>
+          <div class="record-card">
+            <div class="record-icon">⏱</div>
+            <div class="record-val" id="rec-longest">--</div>
+            <div class="record-label">Longest Session</div>
+          </div>
+          <div class="record-card">
+            <div class="record-icon">📚</div>
+            <div class="record-val" id="rec-total">--</div>
+            <div class="record-label">Total Sessions</div>
+          </div>
+          <div class="record-card">
+            <div class="record-icon">🕐</div>
+            <div class="record-val" id="rec-time">--</div>
+            <div class="record-label">Total Study Time</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-tag">Study Streak</div>
+        <div class="streak-card">
+          <div class="streak-num" id="streak-num">0</div>
+          <div class="streak-label">🔥 Day Streak</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-tag">Peak Hours</div>
+        <div class="chart-card">
+          <div class="chart-title">Average Focus Score by Time of Day</div>
+          <canvas id="hoursChart" height="120"></canvas>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-tag">Recent Scores</div>
+        <div class="chart-card">
+          <div class="chart-title">Last 10 Sessions</div>
+          <canvas id="recentChart" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    const PERSONALITIES = {
+      'Morning':    {icon:'🌅', type:'Morning Warrior',   desc:'Your brain peaks at dawn. Early sessions are your superpower.'},
+      'Afternoon':  {icon:'⚡', type:'Afternoon Grinder', desc:'Post-lunch is your power zone. Rare and powerful.'},
+      'Evening':    {icon:'🌙', type:'Evening Scholar',   desc:'When others wind down, you rise. Evening is your domain.'},
+      'Night':      {icon:'🦉', type:'Night Owl',         desc:'The world sleeps, you focus. Late night is when you shine.'},
+      'Late Night': {icon:'🌟', type:'Midnight Mind',     desc:'Burning the midnight oil. Pure dedication.'}
+    };
+
+    function getFocusStyle(sessions) {
+      if (sessions.length < 3) return {icon:'🌱', name:'Rising Star', desc:'Complete more sessions to unlock your focus style.', color:'#1D9E75'};
+      const scores = sessions.map(s => s.score);
+      const avg = scores.reduce((a,b) => a+b) / scores.length;
+      const variance = scores.reduce((a,b) => a + Math.pow(b-avg,2), 0) / scores.length;
+      const std = Math.sqrt(variance);
+      if (avg >= 75 && std < 15) return {icon:'📏', name:'Steady Eddie',     desc:'Consistently high focus. A true professional. You rarely have bad sessions.', color:'#1D9E75'};
+      if (avg >= 65 && std >= 15) return {icon:'🚀', name:'Focus Sprinter',   desc:'Explosive peaks with variance. High ceiling, high reward. Harness the streaks.', color:'#4A9EEF'};
+      if (avg < 60  && std < 15)  return {icon:'⚙',  name:'Steady Grinder',  desc:'Consistent but room to grow. Remove one distraction source and you will skyrocket.', color:'#EF9F27'};
+      return {icon:'🎲', name:'Wild Card', desc:'Highly variable focus. Find what puts you in the zone and replicate it every session.', color:'#E24B4A'};
+    }
+
+    function calcStreak(sessions) {
+      if (!sessions.length) return 0;
+      const dates = [...new Set(sessions.map(s => s.date))].sort().reverse();
+      let streak = 1;
+      for (let i = 1; i < dates.length; i++) {
+        const d1 = new Date(dates[i-1]);
+        const d2 = new Date(dates[i]);
+        const diff = (d1 - d2) / (1000*60*60*24);
+        if (diff === 1) streak++;
+        else break;
+      }
+      return streak;
+    }
+
+    async function loadDNA() {
+      const myName = localStorage.getItem('fm_username') || '';
+      const resp = await fetch('/api/sessions');
+      let sessions = await resp.json();
+
+      // Filter by name
+      if (myName) {
+        sessions = sessions.filter(s => s.name && s.name.toLowerCase() === myName.toLowerCase());
+        document.getElementById('dna-username').textContent = myName + "'s Focus DNA";
+      }
+
+      if (!sessions || sessions.length < 2) {
+        document.getElementById('no-data').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('dna-content').style.display = 'block';
+
+      // Personality
+      const timeScores = {};
+      sessions.forEach(s => {
+        const t = s.time_of_day || 'Evening';
+        if (!timeScores[t]) timeScores[t] = [];
+        timeScores[t].push(s.score);
+      });
+      let bestTime = 'Evening', bestAvg = 0;
+      Object.entries(timeScores).forEach(([t, scores]) => {
+        const avg = scores.reduce((a,b)=>a+b)/scores.length;
+        if (avg > bestAvg) { bestAvg = avg; bestTime = t; }
+      });
+      const pers = PERSONALITIES[bestTime] || {icon:'⚖', type:'Balanced Learner', desc:'You focus consistently at all hours.'};
+      document.getElementById('pers-icon').textContent = pers.icon;
+      document.getElementById('pers-type').textContent = pers.type;
+      document.getElementById('pers-desc').textContent = pers.desc;
+      document.getElementById('pers-sessions').textContent = sessions.length + ' sessions analyzed';
+
+      // Focus Style
+      const style = getFocusStyle(sessions);
+      document.getElementById('style-icon').textContent = style.icon;
+      document.getElementById('style-name').textContent = style.name;
+      document.getElementById('style-name').style.color = style.color;
+      document.getElementById('style-desc').textContent = style.desc;
+
+      // Records
+      const bestScore = Math.max(...sessions.map(s => s.score));
+      const longestSess = Math.max(...sessions.map(s => s.duration || 0));
+      const totalTime = sessions.reduce((a,s) => a + (s.duration||0), 0);
+      document.getElementById('rec-best').textContent = bestScore;
+      document.getElementById('rec-longest').textContent = longestSess.toFixed(0) + 'm';
+      document.getElementById('rec-total').textContent = sessions.length;
+      document.getElementById('rec-time').textContent = totalTime.toFixed(0) + 'm';
+
+      // Streak
+      document.getElementById('streak-num').textContent = calcStreak(sessions);
+
+      // Peak Hours Chart
+      const timeOrder = ['Morning', 'Afternoon', 'Evening', 'Night', 'Late Night'];
+      const timeAvgs = timeOrder.map(t => {
+        const arr = timeScores[t] || [];
+        return arr.length ? Math.round(arr.reduce((a,b)=>a+b)/arr.length) : 0;
+      });
+      new Chart(document.getElementById('hoursChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: timeOrder,
+          datasets: [{
+            data: timeAvgs,
+            backgroundColor: timeAvgs.map(v => v >= 70 ? '#1D9E75' : v >= 50 ? '#EF9F27' : '#E24B4A'),
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true, animation: false,
+          plugins: {legend:{display:false}},
+          scales: {
+            x: {grid:{display:false}, ticks:{color:'#666', font:{size:10}}},
+            y: {min:0, max:100, grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666', font:{size:10}}}
+          }
+        }
+      });
+
+      // Recent Scores Chart
+      const recent = sessions.slice(-10);
+      new Chart(document.getElementById('recentChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: recent.map(s => s.time),
+          datasets: [{
+            data: recent.map(s => s.score),
+            borderColor: '#1D9E75',
+            backgroundColor: 'rgba(29,158,117,0.08)',
+            fill: true, tension: 0.4, pointRadius: 4,
+            pointBackgroundColor: '#1D9E75', borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, animation: false,
+          plugins: {legend:{display:false}},
+          scales: {
+            x: {grid:{display:false}, ticks:{color:'#666', font:{size:9}}},
+            y: {min:0, max:100, grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666', font:{size:9}}}
+          }
+        }
+      });
+    }
+
+    loadDNA();
+  </script>
+</body>
+</html>

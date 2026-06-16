@@ -1,0 +1,235 @@
+html = open('templates/stats.html', 'w', encoding='utf-8')
+html.write("""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats — FocusMirror</title>
+  <meta name="theme-color" content="#1D9E75">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--green:#1D9E75;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;--text:#fff;--muted:#888;}
+    body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;padding:0 0 40px;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:600px;margin:0 auto;}
+    .nav-logo{font-size:16px;font-weight:700;color:var(--green);}
+    .nav-logo span{color:#fff;}
+    .nav-links{display:flex;gap:12px;}
+    .nav-link{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
+    .nav-link:hover{color:#fff;border-color:#555;}
+    .nav-link.active{color:var(--green);border-color:var(--green);}
+    .page{max-width:600px;margin:0 auto;padding:0 16px;}
+    .section-tag{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;}
+    .stat-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+    .stat-val{font-size:28px;font-weight:800;color:var(--green);}
+    .stat-label{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;}
+    .chart-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
+    .emotion-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+    .em-bar-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;}
+    .em-bar-label{font-size:11px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;}
+    .em-bar-track{background:#1a1a1a;border-radius:4px;height:6px;}
+    .em-bar-fill{height:6px;border-radius:4px;}
+    table{width:100%;border-collapse:collapse;}
+    th{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;padding:8px 6px;text-align:left;border-bottom:1px solid #1a1a1a;}
+    td{font-size:12px;color:#888;padding:10px 6px;border-bottom:1px solid #111;}
+    td:first-child{color:#fff;}
+    .grade-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;}
+    .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;overflow-x:auto;}
+    .no-data{text-align:center;padding:60px 20px;color:var(--muted);}
+    .no-data-icon{font-size:48px;margin-bottom:16px;}
+    .no-data h2{font-size:18px;color:#fff;margin-bottom:8px;}
+    .go-btn{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--green);color:#000;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">Focus<span>Mirror</span></div>
+    <div class="nav-links">
+      <a href="/app" class="nav-link">App</a>
+      <a href="/stats" class="nav-link active">Stats</a>
+      <a href="/dna" class="nav-link">DNA</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="no-data" id="no-data" style="display:none">
+      <div class="no-data-icon">📊</div>
+      <h2>No Stats Yet</h2>
+      <p>Complete at least one study session<br>to see your analytics.</p>
+      <a href="/app" class="go-btn">Start Studying →</a>
+    </div>
+
+    <div id="stats-content" style="display:none">
+      <div class="section-tag" style="margin-top:8px">Overview</div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-val" id="st-sessions">0</div><div class="stat-label">Total Sessions</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-avg">0</div><div class="stat-label">Avg Score</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-best">0</div><div class="stat-label">Best Score</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-time">0m</div><div class="stat-label">Total Study Time</div></div>
+      </div>
+
+      <div class="section-tag">Score History</div>
+      <div class="chart-card">
+        <div class="chart-title">All Sessions — Focus Score</div>
+        <canvas id="historyChart" height="110"></canvas>
+      </div>
+
+      <div class="section-tag">Score Distribution</div>
+      <div class="chart-card">
+        <div class="chart-title">How Often You Hit Each Score Range</div>
+        <canvas id="distChart" height="100"></canvas>
+      </div>
+
+      <div class="section-tag">Average Emotions</div>
+      <div class="emotion-bars">
+        <div class="em-bar-card">
+          <div class="em-bar-label"><span>😟 Stress</span><span id="em-stress">0</span></div>
+          <div class="em-bar-track"><div class="em-bar-fill" id="em-stress-bar" style="width:0%;background:#E24B4A"></div></div>
+        </div>
+        <div class="em-bar-card">
+          <div class="em-bar-label"><span>😕 Confusion</span><span id="em-confusion">0</span></div>
+          <div class="em-bar-track"><div class="em-bar-fill" id="em-confusion-bar" style="width:0%;background:#EF9F27"></div></div>
+        </div>
+        <div class="em-bar-card">
+          <div class="em-bar-label"><span>😐 Boreout</span><span id="em-boreout">0</span></div>
+          <div class="em-bar-track"><div class="em-bar-fill" id="em-boreout-bar" style="width:0%;background:#BA7517"></div></div>
+        </div>
+        <div class="em-bar-card">
+          <div class="em-bar-label"><span>😊 Engagement</span><span id="em-engagement">0</span></div>
+          <div class="em-bar-track"><div class="em-bar-fill" id="em-engagement-bar" style="width:0%;background:#1D9E75"></div></div>
+        </div>
+      </div>
+
+      <div class="section-tag">Session History</div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Grade</th>
+              <th>Duration</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    function gradeColor(score) {
+      if (score >= 80) return '#1D9E75';
+      if (score >= 60) return '#4A9EEF';
+      if (score >= 50) return '#EF9F27';
+      return '#E24B4A';
+    }
+
+    function getGrade(score) {
+      if (score >= 90) return 'A+';
+      if (score >= 80) return 'A';
+      if (score >= 70) return 'B';
+      if (score >= 60) return 'C';
+      if (score >= 50) return 'D';
+      return 'F';
+    }
+
+    async function loadStats() {
+      const resp = await fetch('/api/sessions');
+      const sessions = await resp.json();
+
+      if (!sessions || !sessions.length) {
+        document.getElementById('no-data').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('stats-content').style.display = 'block';
+
+      // Overview
+      const avgScore = Math.round(sessions.reduce((a,s)=>a+s.score,0)/sessions.length);
+      const bestScore = Math.max(...sessions.map(s=>s.score));
+      const totalTime = Math.round(sessions.reduce((a,s)=>a+(s.duration||0),0));
+      document.getElementById('st-sessions').textContent = sessions.length;
+      document.getElementById('st-avg').textContent = avgScore;
+      document.getElementById('st-best').textContent = bestScore;
+      document.getElementById('st-time').textContent = totalTime + 'm';
+
+      // History Chart
+      new Chart(document.getElementById('historyChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: sessions.map(s => s.time || ''),
+          datasets: [{
+            data: sessions.map(s => s.score),
+            borderColor: '#1D9E75',
+            backgroundColor: 'rgba(29,158,117,0.06)',
+            fill: true, tension: 0.4, pointRadius: 3,
+            pointBackgroundColor: sessions.map(s => gradeColor(s.score)),
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive:true, animation:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{display:false},
+            y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#444',font:{size:9}}}
+          }
+        }
+      });
+
+      // Distribution Chart
+      const ranges = ['0-20','21-40','41-60','61-80','81-100'];
+      const counts = [0,0,0,0,0];
+      sessions.forEach(s => {
+        if (s.score <= 20) counts[0]++;
+        else if (s.score <= 40) counts[1]++;
+        else if (s.score <= 60) counts[2]++;
+        else if (s.score <= 80) counts[3]++;
+        else counts[4]++;
+      });
+      new Chart(document.getElementById('distChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ranges,
+          datasets: [{
+            data: counts,
+            backgroundColor: ['#E24B4A','#BA7517','#EF9F27','#4A9EEF','#1D9E75'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive:true, animation:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{grid:{display:false},ticks:{color:'#666',font:{size:10}}},
+            y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#666',font:{size:10},stepSize:1}}
+          }
+        }
+      });
+
+      // Session Table
+      const tbody = document.getElementById('history-body');
+      [...sessions].reverse().slice(0,20).forEach(s => {
+        const grade = getGrade(s.score);
+        const color = gradeColor(s.score);
+        tbody.innerHTML += `<tr>
+          <td>${s.name||'Anonymous'}</td>
+          <td style="color:${color};font-weight:700">${s.score}</td>
+          <td><span class="grade-badge" style="background:${color}22;color:${color}">${grade}</span></td>
+          <td>${(s.duration||0).toFixed(0)}m</td>
+          <td>${s.time||''}</td>
+        </tr>`;
+      });
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>""")
+html.close()
+print("stats.html written!")
