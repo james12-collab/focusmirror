@@ -258,6 +258,22 @@
     .acc-login-btn { padding:6px 14px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; }
     .acc-logout-btn { padding:6px 14px; background:#1a1a1a; color:#555; border:1px solid #2a2a2a; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; }
 
+  
+    .benchmark-card { background:#111; border:1px solid #222; border-radius:12px; padding:14px 16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; display:flex; align-items:center; justify-content:space-between; }
+    .bench-left { display:flex; align-items:center; gap:12px; }
+    .bench-icon { font-size:24px; }
+    .bench-label { font-size:10px; color:#555; text-transform:uppercase; letter-spacing:2px; }
+    .bench-val { font-size:20px; font-weight:800; color:#1D9E75; }
+    .bench-right { text-align:right; font-size:11px; color:#444; line-height:1.6; }
+    .sched-card { background:#111; border:1px solid #222; border-radius:12px; padding:14px 16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; }
+    .sched-title { font-size:10px; color:#555; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; }
+    .sched-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #1a1a1a; }
+    .sched-row:last-child { border:none; }
+    .sched-time { font-size:12px; color:#888; }
+    .sched-score { font-size:13px; font-weight:700; }
+    .sched-bar { height:4px; background:#1a1a1a; border-radius:2px; margin-top:6px; overflow:hidden; }
+    .sched-fill { height:4px; border-radius:2px; }
+
   </style>
 </head>
 <body>
@@ -361,6 +377,8 @@
     <a href="/buddy" class="quick-nav-btn">🤝 Buddy</a>
     <a href="/teacher" class="quick-nav-btn">🏫 Teacher</a>
     <a href="/wrapped" class="quick-nav-btn">🎁 Wrapped</a>
+    <a href="/world" class="quick-nav-btn">🌍 World</a>
+    <a href="/exam" class="quick-nav-btn">📅 Exam</a>
   </div>
 
   <div class="microsleep-banner" id="ms-banner">
@@ -559,7 +577,24 @@
   </div>
 
 
-  <div class="class-box">
+  
+  <div class="benchmark-card" id="bench-card" style="display:none">
+    <div class="bench-left">
+      <div class="bench-icon">🌍</div>
+      <div>
+        <div class="bench-label">Global Rank</div>
+        <div class="bench-val" id="bench-val">--</div>
+      </div>
+    </div>
+    <div class="bench-right" id="bench-right">Calculating...</div>
+  </div>
+
+  <div class="sched-card" id="sched-card" style="display:none">
+    <div class="sched-title">🕐 Your Predicted Best Study Times</div>
+    <div id="sched-rows">Loading...</div>
+  </div>
+
+<div class="class-box">
     <div class="class-title">🏫 Join Class Session</div>
     <div class="class-row">
       <input class="class-input" id="class-code-join" placeholder="CLASS CODE" maxlength="8">
@@ -705,6 +740,7 @@
       if (d.score >= 80 && lastScoreAlert < 80) { playChime('positive'); }
       lastScoreAlert = d.score;
       adaptPomodoro(d.score);
+      updateBenchmark(d.score);
       emitScores(d.score, d.posture, d.stress, d.state, d.burnout_mins);
       const box=document.getElementById('alert-box');
       box.className='alert-box';
@@ -749,6 +785,8 @@
     async function resetSession(){ const s=parseInt(document.getElementById("best-val").textContent)||0; if(s>0){showReportCard();}else{await doReset();} return; }
 
     async function doReset(){
+      const bestForLoc = parseInt(document.getElementById("best-val").textContent)||0;
+      if(bestForLoc>0) shareLocation(bestForLoc);
       const name=document.getElementById('name-input').value.trim()||'Anonymous';
       await fetch('/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});
       scoreHistory.length=0;timeLabels.length=0;chart.update();
@@ -937,6 +975,22 @@
     .acc-sub { font-size:10px; color:#444; margin-top:1px; }
     .acc-login-btn { padding:6px 14px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; }
     .acc-logout-btn { padding:6px 14px; background:#1a1a1a; color:#555; border:1px solid #2a2a2a; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; }
+
+  
+    .benchmark-card { background:#111; border:1px solid #222; border-radius:12px; padding:14px 16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; display:flex; align-items:center; justify-content:space-between; }
+    .bench-left { display:flex; align-items:center; gap:12px; }
+    .bench-icon { font-size:24px; }
+    .bench-label { font-size:10px; color:#555; text-transform:uppercase; letter-spacing:2px; }
+    .bench-val { font-size:20px; font-weight:800; color:#1D9E75; }
+    .bench-right { text-align:right; font-size:11px; color:#444; line-height:1.6; }
+    .sched-card { background:#111; border:1px solid #222; border-radius:12px; padding:14px 16px; margin-bottom:12px; max-width:480px; margin-left:auto; margin-right:auto; }
+    .sched-title { font-size:10px; color:#555; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; }
+    .sched-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #1a1a1a; }
+    .sched-row:last-child { border:none; }
+    .sched-time { font-size:12px; color:#888; }
+    .sched-score { font-size:13px; font-weight:700; }
+    .sched-bar { height:4px; background:#1a1a1a; border-radius:2px; margin-top:6px; overflow:hidden; }
+    .sched-fill { height:4px; border-radius:2px; }
 
   </style>
 </head>
@@ -1387,6 +1441,70 @@
 
 
 
+
+    // GLOBAL BENCHMARKING
+    let lastBenchScore = -1;
+    async function updateBenchmark(score) {
+      if (score === lastBenchScore || score === 0) return;
+      lastBenchScore = score;
+      try {
+        const r = await fetch('/api/benchmarks?score=' + score);
+        const d = await r.json();
+        if (!d.total) return;
+        const card = document.getElementById('bench-card');
+        card.style.display = 'flex';
+        document.getElementById('bench-val').textContent = 'Top ' + (100 - d.percentile) + '%';
+        document.getElementById('bench-right').innerHTML =
+          'Better than <b style="color:#1D9E75">' + d.percentile + '%</b> of students<br>' +
+          'Global avg: ' + d.avg + ' | Total: ' + d.total;
+      } catch(e) {}
+    }
+
+    // PREDICTIVE SCHEDULING
+    async function loadSchedule() {
+      const uname = localStorage.getItem('fm_username') || '';
+      try {
+        const r = await fetch('/patterns?user=' + encodeURIComponent(uname));
+        const d = await r.json();
+        if (!d.time_avgs) return;
+        const sched = document.getElementById('sched-card');
+        const rows = document.getElementById('sched-rows');
+        const order = ['Morning','Afternoon','Evening','Night','Late Night'];
+        const emojis = {'Morning':'🌅','Afternoon':'⚡','Evening':'🌙','Night':'🦉','Late Night':'🌟'};
+        const avgs = d.time_avgs;
+        const sorted = order.filter(t => avgs[t]).sort((a,b) => avgs[b] - avgs[a]);
+        if (!sorted.length) return;
+        sched.style.display = 'block';
+        rows.innerHTML = sorted.map((t,i) => {
+          const score = avgs[t];
+          const color = score >= 70 ? '#1D9E75' : score >= 45 ? '#EF9F27' : '#E24B4A';
+          const badge = i === 0 ? ' 🔥 Best' : '';
+          return '<div class="sched-row">' +
+            '<span class="sched-time">' + (emojis[t]||'') + ' ' + t + badge + '</span>' +
+            '<span class="sched-score" style="color:' + color + '">' + score + '</span>' +
+            '</div>' +
+            '<div class="sched-bar"><div class="sched-fill" style="width:' + score + '%;background:' + color + '"></div></div>';
+        }).join('');
+      } catch(e) {}
+    }
+
+    // LOCATION SHARING FOR WORLD MAP
+    function shareLocation(score) {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(pos => {
+        fetch('/api/save-location', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            score: score
+          })
+        }).catch(() => {});
+      }, () => {});
+    }
+
+
     // ACCOUNT SYSTEM
     async function loadAccount() {
       try {
@@ -1641,6 +1759,7 @@
     init();
     initSocket();
     loadAccount();
+    loadSchedule();
     loadAccount();
 
     if('serviceWorker' in navigator){

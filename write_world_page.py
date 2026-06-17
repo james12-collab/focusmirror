@@ -1,0 +1,105 @@
+f = open('templates/world.html', 'w', encoding='utf-8')
+f.write("""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Weather Map — FocusMirror</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0a0a0a;font-family:'Segoe UI',sans-serif;}
+    #map{width:100%;height:100vh;}
+    .overlay{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:linear-gradient(180deg,rgba(0,0,0,0.85),transparent);}
+    .logo{font-size:16px;font-weight:700;color:#1D9E75;}
+    .logo span{color:#fff;}
+    .stats{display:flex;gap:12px;}
+    .stat{background:rgba(0,0,0,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 14px;text-align:center;}
+    .stat-val{font-size:18px;font-weight:700;color:#1D9E75;}
+    .stat-lbl{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;}
+    .legend{position:fixed;bottom:24px;left:20px;z-index:1000;background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;color:#fff;}
+    .leg-title{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+    .leg-row{display:flex;align-items:center;gap:8px;font-size:11px;color:#888;margin-bottom:4px;}
+    .leg-dot{width:10px;height:10px;border-radius:50%;}
+    .back{position:fixed;bottom:24px;right:20px;z-index:1000;background:#1D9E75;color:#000;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;}
+    .pulse-info{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1000;font-size:10px;color:#333;}
+    .no-data{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;text-align:center;color:#555;display:none;}
+    .no-data h2{color:#fff;margin-bottom:8px;}
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="logo">Focus<span>Mirror</span> 🌍 World</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Total Sessions</div></div>
+      <div class="stat"><div class="stat-val" id="s-avg">--</div><div class="stat-lbl">Avg Focus</div></div>
+      <div class="stat"><div class="stat-val" id="s-recent">0</div><div class="stat-lbl">Active (1hr)</div></div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="no-data" id="no-data">
+    <div style="font-size:48px;margin-bottom:16px">🌍</div>
+    <h2>No sessions mapped yet</h2>
+    <p>Use the app and allow location access to appear on the map</p>
+  </div>
+
+  <div class="legend">
+    <div class="leg-title">Focus Score</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#1D9E75"></div>High Focus (70+)</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#EF9F27"></div>Medium (45-69)</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#E24B4A"></div>Low Focus (0-44)</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#fff;border:2px solid #1D9E75"></div>Active now</div>
+  </div>
+
+  <a href="/app" class="back">Back to App</a>
+  <div class="pulse-info">Auto-refreshes every 30 seconds</div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18
+    }).addTo(map);
+
+    const markers = L.layerGroup().addTo(map);
+
+    function sc(s){ return s>=70?'#1D9E75':s>=45?'#EF9F27':'#E24B4A'; }
+
+    function isRecent(t){ return Date.now() - new Date(t) < 3600000; }
+
+    async function loadData() {
+      const r = await fetch('/api/world-data');
+      const data = await r.json();
+      markers.clearLayers();
+      if (!data.length) {
+        document.getElementById('no-data').style.display = 'block';
+        return;
+      }
+      document.getElementById('no-data').style.display = 'none';
+      const scores = data.map(d => d.score);
+      const recent = data.filter(d => isRecent(d.time));
+      document.getElementById('s-total').textContent = data.length;
+      document.getElementById('s-avg').textContent = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+      document.getElementById('s-recent').textContent = recent.length;
+      data.forEach(d => {
+        const rec = isRecent(d.time);
+        const c = sc(d.score);
+        L.circleMarker([d.lat, d.lng], {
+          radius: rec ? 14 : 8,
+          fillColor: c,
+          color: rec ? '#fff' : c,
+          weight: rec ? 2 : 1,
+          opacity: 0.9,
+          fillOpacity: rec ? 0.95 : 0.55
+        }).bindPopup(`<b>Focus Score: ${d.score}</b><br><small>${rec ? '🟢 Active now' : d.time.split('T')[0]}</small>`).addTo(markers);
+      });
+    }
+    loadData();
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>""")
+f.close()
+print("world.html written!")
