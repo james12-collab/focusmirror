@@ -238,6 +238,26 @@
     .class-btn.leave { background:#1a1a1a; color:#888; border:1px solid #333; }
     .class-status { font-size:11px; color:#1D9E75; margin-top:8px; min-height:16px; }
 
+  
+    .account-bar { display:flex; align-items:center; justify-content:space-between; max-width:480px; margin:0 auto 12px; background:#111; border:1px solid #1a1a1a; border-radius:12px; padding:10px 14px; }
+    .account-info { display:flex; align-items:center; gap:10px; }
+    .account-avatar { width:32px; height:32px; border-radius:50%; background:#0d2e1f; border:2px solid #1D9E75; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#1D9E75; }
+    .account-name { font-size:13px; font-weight:600; color:#fff; }
+    .account-type { font-size:10px; color:#555; }
+    .account-btns { display:flex; gap:6px; }
+    .account-btn { padding:5px 12px; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; border:none; }
+    .btn-login { background:#1D9E75; color:#000; }
+    .btn-logout { background:#1a1a1a; color:#666; border:1px solid #333; }
+
+  
+    .acc-bar { max-width:480px; margin:0 auto 12px; background:#111; border:1px solid #1a1a1a; border-radius:12px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
+    .acc-left { display:flex; align-items:center; gap:10px; }
+    .acc-avatar { width:34px; height:34px; border-radius:50%; background:#0d2e1f; border:2px solid #1D9E75; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:#1D9E75; flex-shrink:0; }
+    .acc-name { font-size:13px; font-weight:600; }
+    .acc-sub { font-size:10px; color:#444; margin-top:1px; }
+    .acc-login-btn { padding:6px 14px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; }
+    .acc-logout-btn { padding:6px 14px; background:#1a1a1a; color:#555; border:1px solid #2a2a2a; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; }
+
   </style>
 </head>
 <body>
@@ -358,6 +378,33 @@
       </div>
     </div>
     <button class="pdf-btn" onclick="downloadPDF()">📄 Download Report</button>
+  </div>
+
+  <div class="account-bar" id="account-bar">
+    <div class="account-info">
+      <div class="account-avatar" id="acc-avatar">?</div>
+      <div>
+        <div class="account-name" id="acc-name">Guest</div>
+        <div class="account-type" id="acc-type">Not logged in</div>
+      </div>
+    </div>
+    <div class="account-btns">
+      <button class="account-btn btn-login" id="acc-login-btn" onclick="window.location='/login-page'" style="display:none">Log In</button>
+      <button class="account-btn btn-logout" id="acc-logout-btn" onclick="window.location='/logout'" style="display:none">Log Out</button>
+    </div>
+  </div>
+
+  <div class="acc-bar">
+    <div class="acc-left">
+      <div class="acc-avatar" id="acc-av">?</div>
+      <div>
+        <div class="acc-name" id="acc-name">Guest</div>
+        <div class="acc-sub" id="acc-sub">Not logged in</div>
+      </div>
+    </div>
+    <div id="acc-action">
+      <button class="acc-login-btn" onclick="location.href='/login-page'">Log In</button>
+    </div>
   </div>
 
   <div class="burnout-banner" id="burnout-banner"></div>
@@ -871,6 +918,26 @@
     .class-btn.leave { background:#1a1a1a; color:#888; border:1px solid #333; }
     .class-status { font-size:11px; color:#1D9E75; margin-top:8px; min-height:16px; }
 
+  
+    .account-bar { display:flex; align-items:center; justify-content:space-between; max-width:480px; margin:0 auto 12px; background:#111; border:1px solid #1a1a1a; border-radius:12px; padding:10px 14px; }
+    .account-info { display:flex; align-items:center; gap:10px; }
+    .account-avatar { width:32px; height:32px; border-radius:50%; background:#0d2e1f; border:2px solid #1D9E75; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#1D9E75; }
+    .account-name { font-size:13px; font-weight:600; color:#fff; }
+    .account-type { font-size:10px; color:#555; }
+    .account-btns { display:flex; gap:6px; }
+    .account-btn { padding:5px 12px; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; border:none; }
+    .btn-login { background:#1D9E75; color:#000; }
+    .btn-logout { background:#1a1a1a; color:#666; border:1px solid #333; }
+
+  
+    .acc-bar { max-width:480px; margin:0 auto 12px; background:#111; border:1px solid #1a1a1a; border-radius:12px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
+    .acc-left { display:flex; align-items:center; gap:10px; }
+    .acc-avatar { width:34px; height:34px; border-radius:50%; background:#0d2e1f; border:2px solid #1D9E75; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:#1D9E75; flex-shrink:0; }
+    .acc-name { font-size:13px; font-weight:600; }
+    .acc-sub { font-size:10px; color:#444; margin-top:1px; }
+    .acc-login-btn { padding:6px 14px; background:#1D9E75; color:#000; border:none; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; }
+    .acc-logout-btn { padding:6px 14px; background:#1a1a1a; color:#555; border:1px solid #2a2a2a; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; }
+
   </style>
 </head>
 <body>
@@ -1171,7 +1238,8 @@
     // PATTERNS
     async function loadPatterns() {
       try {
-        const resp = await fetch('/patterns');
+        const uname = localStorage.getItem('fm_username') || '';
+        const resp = await fetch('/patterns?user=' + encodeURIComponent(uname));
         const data = await resp.json();
         if (!data || !data.total_sessions) return;
         document.getElementById('patterns-box').style.display = 'block';
@@ -1316,6 +1384,55 @@
       }
     }
 
+
+
+
+    // ACCOUNT SYSTEM
+    async function loadAccount() {
+      try {
+        const resp = await fetch('/me');
+        const data = await resp.json();
+        if (data.logged_in) {
+          const name = data.display_name;
+          document.getElementById('acc-avatar').textContent = name[0].toUpperCase();
+          document.getElementById('acc-name').textContent = name;
+          document.getElementById('acc-type').textContent = 'Logged in as @' + data.username;
+          document.getElementById('acc-logout-btn').style.display = 'block';
+          document.getElementById('acc-login-btn').style.display = 'none';
+          // Auto-fill name input
+          document.getElementById('name-input').value = name;
+          localStorage.setItem('fm_username', name);
+        } else {
+          document.getElementById('acc-name').textContent = 'Guest';
+          document.getElementById('acc-type').textContent = 'Not logged in';
+          document.getElementById('acc-login-btn').style.display = 'block';
+          document.getElementById('acc-logout-btn').style.display = 'none';
+        }
+      } catch(e) {
+        console.log('Account load error:', e);
+      }
+    }
+
+
+
+    async function loadAccount() {
+      try {
+        const r = await fetch('/api/me');
+        const d = await r.json();
+        if (d.logged_in) {
+          document.getElementById('acc-av').textContent = d.display_name[0].toUpperCase();
+          document.getElementById('acc-name').textContent = d.display_name;
+          document.getElementById('acc-sub').textContent = '@' + d.username;
+          document.getElementById('acc-action').innerHTML = '<button class="acc-logout-btn" onclick="location.href=\'/api/logout\'">Log Out</button>';
+          // Auto fill name
+          document.getElementById('name-input').value = d.display_name;
+          localStorage.setItem('fm_username', d.display_name);
+        } else {
+          document.getElementById('acc-name').textContent = 'Guest';
+          document.getElementById('acc-sub').textContent = 'Not logged in';
+        }
+      } catch(e) { console.log('Account error:', e); }
+    }
 
 
     // SOCKET.IO — Buddy + Class
@@ -1523,6 +1640,8 @@
     }
     init();
     initSocket();
+    loadAccount();
+    loadAccount();
 
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('/static/sw.js')

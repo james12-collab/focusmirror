@@ -139,7 +139,20 @@
     }
 
     async function loadStats() {
-      const myName = localStorage.getItem('fm_username') || '';
+      // Get name from server session first, fallback to localStorage
+      let myName = '';
+      try {
+        const meResp = await fetch('/api/me');
+        const meData = await meResp.json();
+        if (meData.logged_in) {
+          myName = meData.display_name;
+          localStorage.setItem('fm_username', myName);
+        } else {
+          myName = localStorage.getItem('fm_username') || '';
+        }
+      } catch(e) {
+        myName = localStorage.getItem('fm_username') || '';
+      }
       const resp = await fetch('/api/sessions');
       let sessions = await resp.json();
 

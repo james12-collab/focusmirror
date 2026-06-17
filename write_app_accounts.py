@@ -1,4 +1,5 @@
-import time
+code = open('app.py', 'w')
+code.write("""import time
 import threading
 import json
 from flask import Flask, Response, render_template, jsonify, request, session, redirect
@@ -8,11 +9,10 @@ from tab_monitor import TabMonitor
 from leaderboard import save_score, get_leaderboard, get_rank
 from badges import check_badges, get_all_badges
 from pattern_memory import save_session, get_patterns, load_sessions
-from accounts import signup, login
+from accounts import create_account, verify_login, get_display_name
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'focusmirror_secret_key_2024'
-app.config['PERMANENT_SESSION_LIFETIME'] = 60 * 60 * 24 * 30
+app.config['SECRET_KEY'] = 'focusmirror2024secret'
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 scorer = FocusScorer()
@@ -56,109 +56,121 @@ def tab_loop():
 threading.Thread(target=tab_loop, daemon=True).start()
 print("Server ready!")
 
-# ── ACCOUNT ROUTES ─────────────────────────────────
+def get_current_user():
+    return session.get('username', None)
+
+def get_current_display():
+    return session.get('display_name', 'Guest')
+
+# ── ACCOUNT ROUTES ─────────────────────────────────────────
 @app.route('/login-page')
 def login_page():
+    if get_current_user():
+        return redirect('/app')
     return render_template('login.html')
 
-@app.route('/api/signup', methods=['POST'])
-def api_signup():
-    d = request.json or {}
-    success, result = signup(d.get('username',''), d.get('password',''))
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json or {}
+    username = data.get('username', '').strip().lower()
+    password = data.get('password', '')
+    success, result = verify_login(username, password)
     if success:
-        session.permanent = True
+        session['username'] = username
         session['display_name'] = result
-        session['username'] = d['username'].strip().lower()
+        session.permanent = True
         return jsonify({"success": True, "display_name": result})
     return jsonify({"success": False, "error": result})
 
-@app.route('/api/login', methods=['POST'])
-def api_login():
-    d = request.json or {}
-    success, result = login(d.get('username',''), d.get('password',''))
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json or {}
+    username = data.get('username', '').strip().lower()
+    password = data.get('password', '')
+    success, msg = create_account(username, password)
     if success:
+        display = username.capitalize()
+        session['username'] = username
+        session['display_name'] = display
         session.permanent = True
-        session['display_name'] = result
-        session['username'] = d['username'].strip().lower()
-        return jsonify({"success": True, "display_name": result})
-    return jsonify({"success": False, "error": result})
+        return jsonify({"success": True, "display_name": display})
+    return jsonify({"success": False, "error": msg})
 
-@app.route('/api/logout')
-def api_logout():
+@app.route('/logout')
+def logout():
     session.clear()
     return redirect('/login-page')
 
-@app.route('/api/me')
-def api_me():
-    if 'username' in session:
-        return jsonify({
-            "logged_in": True,
-            "username": session['username'],
-            "display_name": session['display_name']
-        })
+@app.route('/me')
+def me():
+    user = get_current_user()
+    if user:
+        return jsonify({"logged_in": True, "username": user, "display_name": get_current_display()})
     return jsonify({"logged_in": False})
 
-# ── SOCKET EVENTS ───────────────────────────────────
+# ── SOCKET EVENTS ──────────────────────────────────────────
 @socketio.on('join_buddy')
 def handle_join_buddy(data):
-    room_code = str(data.get('room_code','')).upper().strip()
-    name = data.get('name','Anonymous')
-    if not room_code: return
+    room_code = str(data.get('room_code', '')).upper().strip()
+    name = data.get('name', 'Anonymous')
+    if not room_code:
+        return
     join_room('buddy_' + room_code)
     if room_code not in buddy_rooms:
         buddy_rooms[room_code] = {}
-    buddy_rooms[room_code][name] = {'score':0,'posture':100,'stress':0,'name':name}
+    buddy_rooms[room_code][name] = {'score': 0, 'posture': 100, 'stress': 0, 'name': name}
     emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
 
 @socketio.on('buddy_score')
 def handle_buddy_score(data):
-    room_code = str(data.get('room_code','')).upper().strip()
-    name = data.get('name','Anonymous')
+    room_code = str(data.get('room_code', '')).upper().strip()
+    name = data.get('name', 'Anonymous')
     if room_code and name:
         if room_code not in buddy_rooms:
             buddy_rooms[room_code] = {}
         buddy_rooms[room_code][name] = {
-            'score': data.get('score',0),
-            'posture': data.get('posture',100),
-            'stress': data.get('stress',0),
+            'score': data.get('score', 0),
+            'posture': data.get('posture', 100),
+            'stress': data.get('stress', 0),
             'name': name
         }
         emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
 
 @socketio.on('join_class')
 def handle_join_class(data):
-    class_code = str(data.get('class_code','')).upper().strip()
-    name = data.get('name','Anonymous')
-    role = data.get('role','student')
-    if not class_code: return
+    class_code = str(data.get('class_code', '')).upper().strip()
+    name = data.get('name', 'Anonymous')
+    role = data.get('role', 'student')
+    if not class_code:
+        return
     join_room('class_' + class_code)
     if class_code not in class_rooms:
         class_rooms[class_code] = {}
     if role == 'student':
         class_rooms[class_code][name] = {
-            'score':0,'posture':100,'stress':0,
-            'name':name,'state':'STARTING','burnout_mins':None
+            'score': 0, 'posture': 100, 'stress': 0,
+            'name': name, 'state': 'STARTING', 'burnout_mins': None
         }
-    emit('class_update', class_rooms.get(class_code,{}), room='class_' + class_code)
+    emit('class_update', class_rooms.get(class_code, {}), room='class_' + class_code)
 
 @socketio.on('class_score')
 def handle_class_score(data):
-    class_code = str(data.get('class_code','')).upper().strip()
-    name = data.get('name','Anonymous')
+    class_code = str(data.get('class_code', '')).upper().strip()
+    name = data.get('name', 'Anonymous')
     if class_code and name:
         if class_code not in class_rooms:
             class_rooms[class_code] = {}
         class_rooms[class_code][name] = {
-            'score': data.get('score',0),
-            'posture': data.get('posture',100),
-            'stress': data.get('stress',0),
+            'score': data.get('score', 0),
+            'posture': data.get('posture', 100),
+            'stress': data.get('stress', 0),
             'name': name,
-            'state': data.get('state','TRACKING'),
+            'state': data.get('state', 'TRACKING'),
             'burnout_mins': data.get('burnout_mins')
         }
         emit('class_update', class_rooms[class_code], room='class_' + class_code)
 
-# ── MAIN ROUTES ─────────────────────────────────────
+# ── MAIN ROUTES ────────────────────────────────────────────
 @app.route('/')
 def landing():
     return render_template('landing.html')
@@ -193,36 +205,8 @@ def api_sessions():
 
 @app.route('/patterns')
 def patterns():
-    username = request.args.get('user', '').strip().lower()
-    all_sessions = load_sessions()
-    if username:
-        filtered = [s for s in all_sessions if s.get('name','').lower() == username]
-    else:
-        filtered = all_sessions
-    from pattern_memory import calc_streak, get_grade
-    import time
-    if len(filtered) < 2:
-        return jsonify({})
-    time_scores = {}
-    for s in filtered:
-        tod = s.get('time_of_day', 'Unknown')
-        if tod not in time_scores:
-            time_scores[tod] = []
-        time_scores[tod].append(s['score'])
-    best_time = max(time_scores, key=lambda x: sum(time_scores[x])/len(time_scores[x]))
-    avg_duration = sum(s['duration'] for s in filtered) / len(filtered)
-    recent = filtered[-7:]
-    trend = "improving" if recent[-1]['score'] > recent[0]['score'] else "declining"
-    streak = calc_streak(filtered)
-    return jsonify({
-        "total_sessions": len(filtered),
-        "best_time": best_time,
-        "avg_duration": round(avg_duration, 1),
-        "trend": trend,
-        "recent_scores": [s['score'] for s in recent],
-        "avg_score": round(sum(s['score'] for s in filtered) / len(filtered), 1),
-        "streak": streak
-    })
+    data = get_patterns()
+    return jsonify(data or {})
 
 @app.route('/reset', methods=['POST'])
 def reset():
@@ -230,7 +214,7 @@ def reset():
     global current_name, earned_badges, microsleep_count
     global consecutive_good_seconds, consecutive_posture_seconds, consecutive_blink_seconds
     data = request.json or {}
-    name = data.get('name','Anonymous').strip()
+    name = data.get('name', 'Anonymous').strip()
     if name:
         current_name = name
     if session_best_score > 0:
@@ -246,15 +230,15 @@ def reset():
     consecutive_posture_seconds = 0
     consecutive_blink_seconds = 0
     latest_data.update({
-        "score":0,"bpm":0,"posture":100,
-        "state":"STARTING","recommendation":"Initializing...",
-        "session_minutes":0,"switches":0,"burnout_mins":None,
-        "stress":0,"confusion":0,"boreout":0,"engagement":0,
-        "microsleep":False,"microsleep_count":0,
-        "heatmap":[],"leaderboard":get_leaderboard(),
-        "badges":[],"new_badge":None,"all_badges":get_all_badges()
+        "score": 0, "bpm": 0, "posture": 100,
+        "state": "STARTING", "recommendation": "Initializing...",
+        "session_minutes": 0, "switches": 0, "burnout_mins": None,
+        "stress": 0, "confusion": 0, "boreout": 0, "engagement": 0,
+        "microsleep": False, "microsleep_count": 0,
+        "heatmap": [], "leaderboard": get_leaderboard(),
+        "badges": [], "new_badge": None, "all_badges": get_all_badges()
     })
-    return jsonify({"status":"reset","leaderboard":get_leaderboard()})
+    return jsonify({"status": "reset", "leaderboard": get_leaderboard()})
 
 @app.route('/sensor', methods=['POST'])
 def sensor():
@@ -262,14 +246,14 @@ def sensor():
     global consecutive_good_seconds, consecutive_posture_seconds, consecutive_blink_seconds
     try:
         d = request.json
-        bpm = d.get('bpm',0)
-        posture = d.get('posture',100)
-        ear = d.get('ear',0.3)
-        stress = d.get('stress',0)
-        confusion = d.get('confusion',0)
-        boreout = d.get('boreout',0)
-        engagement = d.get('engagement',50)
-        microsleep = d.get('microsleep',False)
+        bpm = d.get('bpm', 0)
+        posture = d.get('posture', 100)
+        ear = d.get('ear', 0.3)
+        stress = d.get('stress', 0)
+        confusion = d.get('confusion', 0)
+        boreout = d.get('boreout', 0)
+        engagement = d.get('engagement', 50)
+        microsleep = d.get('microsleep', False)
         if microsleep:
             microsleep_count += 1
         if ear < 0.22:
@@ -293,7 +277,7 @@ def sensor():
         else:
             consecutive_blink_seconds = 0
         if time.time() - last_heatmap >= 10:
-            heatmap_data.append({"minute":round(scorer.session_minutes(),1),"score":score})
+            heatmap_data.append({"minute": round(scorer.session_minutes(), 1), "score": score})
             if len(heatmap_data) > 60:
                 heatmap_data.pop(0)
             last_heatmap = time.time()
@@ -310,25 +294,25 @@ def sensor():
         )
         new_badge = new_badges[0] if new_badges else None
         latest_data.update({
-            "score":score,"bpm":bpm,"posture":posture,
-            "state":scorer.get_state(score),"recommendation":rec,
-            "burnout_mins":burnout_mins,
-            "session_minutes":scorer.session_minutes(),
-            "switches":switches,"tab_status":tab_monitor.get_status(),
-            "current_app":tab_monitor.current_app[:40],
-            "heatmap":heatmap_data,
-            "stress":stress,"confusion":confusion,
-            "boreout":boreout,"engagement":engagement,
-            "microsleep":microsleep,"microsleep_count":microsleep_count,
-            "leaderboard":get_leaderboard(),"rank":rank,
-            "best_score":session_best_score,"current_name":current_name,
-            "badges":updated_badges,"new_badge":new_badge,
-            "all_badges":get_all_badges()
+            "score": score, "bpm": bpm, "posture": posture,
+            "state": scorer.get_state(score), "recommendation": rec,
+            "burnout_mins": burnout_mins,
+            "session_minutes": scorer.session_minutes(),
+            "switches": switches, "tab_status": tab_monitor.get_status(),
+            "current_app": tab_monitor.current_app[:40],
+            "heatmap": heatmap_data,
+            "stress": stress, "confusion": confusion,
+            "boreout": boreout, "engagement": engagement,
+            "microsleep": microsleep, "microsleep_count": microsleep_count,
+            "leaderboard": get_leaderboard(), "rank": rank,
+            "best_score": session_best_score, "current_name": current_name,
+            "badges": updated_badges, "new_badge": new_badge,
+            "all_badges": get_all_badges()
         })
         return jsonify(latest_data)
     except Exception as e:
         print(f"Sensor error: {e}")
-        return jsonify({"error":str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/leaderboard')
 def leaderboard():
@@ -338,18 +322,21 @@ def leaderboard():
 def reset_leaderboard_route():
     from leaderboard import reset_leaderboard
     reset_leaderboard()
-    return jsonify({"status":"reset","leaderboard":[]})
+    return jsonify({"status": "reset", "leaderboard": []})
 
 @app.route('/data')
 def data():
     def generate():
         while True:
-            yield f"data: {json.dumps(latest_data)}\n\n"
+            yield f"data: {json.dumps(latest_data)}\\n\\n"
             time.sleep(1)
     return Response(generate(), mimetype='text/event-stream')
 
 if __name__ == '__main__':
     import os
-    port = int(os.environ.get('PORT',5000))
+    port = int(os.environ.get('PORT', 5000))
     print("FocusMirror running at http://127.0.0.1:5000")
     socketio.run(app, debug=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)
+""")
+code.close()
+print("app.py written!")

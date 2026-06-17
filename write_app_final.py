@@ -1,4 +1,5 @@
-import time
+code = open('app.py', 'w', encoding='utf-8')
+code.write("""import time
 import threading
 import json
 from flask import Flask, Response, render_template, jsonify, request, session, redirect
@@ -193,36 +194,8 @@ def api_sessions():
 
 @app.route('/patterns')
 def patterns():
-    username = request.args.get('user', '').strip().lower()
-    all_sessions = load_sessions()
-    if username:
-        filtered = [s for s in all_sessions if s.get('name','').lower() == username]
-    else:
-        filtered = all_sessions
-    from pattern_memory import calc_streak, get_grade
-    import time
-    if len(filtered) < 2:
-        return jsonify({})
-    time_scores = {}
-    for s in filtered:
-        tod = s.get('time_of_day', 'Unknown')
-        if tod not in time_scores:
-            time_scores[tod] = []
-        time_scores[tod].append(s['score'])
-    best_time = max(time_scores, key=lambda x: sum(time_scores[x])/len(time_scores[x]))
-    avg_duration = sum(s['duration'] for s in filtered) / len(filtered)
-    recent = filtered[-7:]
-    trend = "improving" if recent[-1]['score'] > recent[0]['score'] else "declining"
-    streak = calc_streak(filtered)
-    return jsonify({
-        "total_sessions": len(filtered),
-        "best_time": best_time,
-        "avg_duration": round(avg_duration, 1),
-        "trend": trend,
-        "recent_scores": [s['score'] for s in recent],
-        "avg_score": round(sum(s['score'] for s in filtered) / len(filtered), 1),
-        "streak": streak
-    })
+    data = get_patterns()
+    return jsonify(data or {})
 
 @app.route('/reset', methods=['POST'])
 def reset():
@@ -344,7 +317,7 @@ def reset_leaderboard_route():
 def data():
     def generate():
         while True:
-            yield f"data: {json.dumps(latest_data)}\n\n"
+            yield f"data: {json.dumps(latest_data)}\\n\\n"
             time.sleep(1)
     return Response(generate(), mimetype='text/event-stream')
 
@@ -353,3 +326,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT',5000))
     print("FocusMirror running at http://127.0.0.1:5000")
     socketio.run(app, debug=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)
+""")
+code.close()
+print("app.py written!")
