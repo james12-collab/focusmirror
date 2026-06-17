@@ -4,4 +4,4 @@ scikit-learn
 requests
 pillow
 qrcode
-pyngrok
+flask-socketio

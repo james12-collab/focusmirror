@@ -1,4 +1,5 @@
-import time
+code = open('app.py', 'w')
+code.write("""import time
 import threading
 import json
 from flask import Flask, Response, render_template, jsonify, request
@@ -272,7 +273,7 @@ def reset_leaderboard_route():
 def data():
     def generate():
         while True:
-            yield f"data: {json.dumps(latest_data)}\n\n"
+            yield f"data: {json.dumps(latest_data)}\\n\\n"
             time.sleep(1)
     return Response(generate(), mimetype='text/event-stream')
 
@@ -281,3 +282,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print("FocusMirror running at http://127.0.0.1:5000")
     socketio.run(app, debug=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)
+""")
+code.close()
+print("app.py written!")

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Buddy — FocusMirror</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;padding-bottom:40px;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 20px;max-width:500px;margin:0 auto;}
+    .logo{font-size:16px;font-weight:700;color:#1D9E75;}
+    .logo span{color:#fff;}
+    .nav-links{display:flex;gap:8px;}
+    .nl{font-size:11px;color:#666;text-decoration:none;padding:5px 10px;border-radius:20px;border:1px solid #222;}
+    .nl.active{color:#1D9E75;border-color:#1D9E75;}
+    .page{max-width:500px;margin:0 auto;padding:0 16px;}
+    .card{background:#111;border:1px solid #1a1a1a;border-radius:16px;padding:24px;margin-bottom:16px;}
+    .card-title{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+    input{width:100%;background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:11px 14px;color:#fff;font-size:14px;outline:none;margin-bottom:10px;}
+    input:focus{border-color:#1D9E75;}
+    input.code{font-size:18px;font-weight:700;letter-spacing:4px;text-align:center;}
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .btn{padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;}
+    .btn-green{background:#1D9E75;color:#000;}
+    .btn-dark{background:#1a1a1a;color:#888;border:1px solid #333;}
+    .room-header{background:#0d2e1f;border:1px solid #1D9E75;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+    .room-code{font-size:20px;font-weight:800;color:#1D9E75;letter-spacing:4px;}
+    .members{font-size:11px;color:#555;}
+    .alert{background:#2e0d0d;border:1px solid #E24B4A;border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px;color:#E24B4A;text-align:center;display:none;}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+    .player{background:#111;border:1px solid #222;border-radius:14px;padding:14px;text-align:center;}
+    .player.you{border-color:#1D9E75;}
+    .player.buddy{border-color:#4A9EEF;}
+    .player.danger{border-color:#E24B4A;background:#1a0808;}
+    .plabel{font-size:9px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+    .plabel.y{color:#1D9E75;}
+    .plabel.b{color:#4A9EEF;}
+    .pname{font-size:12px;font-weight:600;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .ring{position:relative;width:80px;height:80px;margin:0 auto 10px;}
+    .rscore{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;font-weight:800;}
+    .pstat{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;}
+    .pstat-l{color:#555;}
+    .pstat-v{font-weight:600;}
+    .dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;}
+    .dot.on{background:#1D9E75;animation:p 2s infinite;}
+    .dot.off{background:#333;}
+    @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+    .info{background:#111;border:1px solid #222;border-radius:10px;padding:12px;font-size:11px;color:#444;text-align:center;margin-bottom:12px;}
+    .hidden{display:none;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Focus<span>Mirror</span></div>
+    <div class="nav-links">
+      <a href="/app" class="nl">App</a>
+      <a href="/stats" class="nl">Stats</a>
+      <a href="/dna" class="nl">DNA</a>
+      <a href="/buddy" class="nl active">Buddy</a>
+      <a href="/teacher" class="nl">Teacher</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="card" id="setup">
+      <div class="card-title">🤝 Study Buddy Mode</div>
+      <p style="font-size:13px;color:#666;margin-bottom:18px;line-height:1.7">Share a room code with a friend. See each other's live focus scores. Get alerted when your buddy is losing focus.</p>
+      <input id="myname" placeholder="Your name...">
+      <input id="rcode" class="code" placeholder="ROOM CODE">
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="joinRoom()">Join Room</button>
+        <button class="btn btn-dark" onclick="createRoom()">Create Room</button>
+      </div>
+    </div>
+
+    <div id="room" class="hidden">
+      <div class="room-header">
+        <div>
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:2px">Room Code</div>
+          <div class="room-code" id="rdisp">------</div>
+        </div>
+        <div class="members" id="mcount">1 member</div>
+      </div>
+
+      <div class="alert" id="alert">⚠ Your buddy is losing focus!</div>
+
+      <div class="split">
+        <div class="player you">
+          <div class="plabel y">YOU</div>
+          <div class="pname" id="mydisp">--</div>
+          <div class="ring">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="33" fill="none" stroke="#1a1a1a" stroke-width="6"/>
+              <circle cx="40" cy="40" r="33" fill="none" stroke="#1D9E75" stroke-width="6"
+                stroke-dasharray="207.3" stroke-dashoffset="207.3"
+                transform="rotate(-90 40 40)" id="myring"/>
+            </svg>
+            <div class="rscore" id="myscore" style="color:#1D9E75">0</div>
+          </div>
+          <div class="pstat"><span class="pstat-l">Posture</span><span class="pstat-v" id="mypos">--</span></div>
+          <div class="pstat"><span class="pstat-l">Stress</span><span class="pstat-v" id="mystress" style="color:#E24B4A">--</span></div>
+          <div style="font-size:9px;color:#333;margin-top:8px">From your app</div>
+        </div>
+        <div class="player buddy" id="buddycard">
+          <div class="plabel b">BUDDY</div>
+          <div class="pname" id="buddydisp">Waiting...</div>
+          <div class="ring">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="33" fill="none" stroke="#1a1a1a" stroke-width="6"/>
+              <circle cx="40" cy="40" r="33" fill="none" stroke="#4A9EEF" stroke-width="6"
+                stroke-dasharray="207.3" stroke-dashoffset="207.3"
+                transform="rotate(-90 40 40)" id="bring"/>
+            </svg>
+            <div class="rscore" id="bscore" style="color:#4A9EEF">--</div>
+          </div>
+          <div class="pstat"><span class="pstat-l">Posture</span><span class="pstat-v" id="bpos">--</span></div>
+          <div class="pstat"><span class="pstat-l">Stress</span><span class="pstat-v" id="bstress" style="color:#E24B4A">--</span></div>
+          <div style="margin-top:8px">
+            <span class="dot off" id="bdot"></span>
+            <span style="font-size:10px;color:#333" id="bstatus">Waiting...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info">💡 Share the code with your friend. They open /buddy, enter the code, and study together!</div>
+      <button class="btn btn-dark" style="width:100%" onclick="leaveRoom()">Leave Room</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const C = 207.3;
+    let socket, myName, roomCode;
+
+    function sc(s){return s>=70?'#1D9E75':s>=45?'#EF9F27':'#E24B4A';}
+
+    function ring(id, s){
+      const el = document.getElementById(id);
+      el.setAttribute('stroke-dashoffset', C*(1-s/100));
+      el.setAttribute('stroke', sc(s));
+    }
+
+    function createRoom(){
+      const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let c='';for(let i=0;i<6;i++)c+=ch[Math.floor(Math.random()*ch.length)];
+      document.getElementById('rcode').value=c;
+      joinRoom();
+    }
+
+    function joinRoom(){
+      myName=document.getElementById('myname').value.trim()||'Student';
+      roomCode=document.getElementById('rcode').value.trim().toUpperCase();
+      if(!roomCode){alert('Enter a room code');return;}
+      if(!socket){
+        socket=io();
+        socket.on('buddy_update', onUpdate);
+      }
+      socket.emit('join_buddy',{room_code:roomCode,name:myName});
+      document.getElementById('setup').classList.add('hidden');
+      document.getElementById('room').classList.remove('hidden');
+      document.getElementById('rdisp').textContent=roomCode;
+      document.getElementById('mydisp').textContent=myName;
+      localStorage.setItem('fm_buddy_room',roomCode);
+      localStorage.setItem('fm_buddy_name',myName);
+    }
+
+    function leaveRoom(){
+      if(socket)socket.disconnect();socket=null;
+      document.getElementById('setup').classList.remove('hidden');
+      document.getElementById('room').classList.add('hidden');
+    }
+
+    function onUpdate(data){
+      const members=Object.keys(data);
+      document.getElementById('mcount').textContent=members.length+' member'+(members.length!==1?'s':'');
+      const me=data[myName];
+      const buddy=Object.values(data).find(d=>d.name!==myName);
+      if(me){
+        document.getElementById('myscore').textContent=me.score;
+        document.getElementById('myscore').style.color=sc(me.score);
+        ring('myring',me.score);
+        document.getElementById('mypos').textContent=me.posture;
+        document.getElementById('mystress').textContent=me.stress;
+      }
+      if(buddy){
+        document.getElementById('buddydisp').textContent=buddy.name;
+        document.getElementById('bscore').textContent=buddy.score;
+        document.getElementById('bscore').style.color=sc(buddy.score);
+        ring('bring',buddy.score);
+        document.getElementById('bpos').textContent=buddy.posture;
+        document.getElementById('bstress').textContent=buddy.stress;
+        document.getElementById('bdot').className='dot on';
+        document.getElementById('bstatus').textContent='Online';
+        const alert=document.getElementById('alert');
+        const bc=document.getElementById('buddycard');
+        if(buddy.score<40){
+          alert.style.display='block';
+          alert.textContent='⚠ '+buddy.name+' is losing focus! Score: '+buddy.score;
+          bc.classList.add('danger');
+        }else{
+          alert.style.display='none';
+          bc.classList.remove('danger');
+        }
+      }else{
+        document.getElementById('bdot').className='dot off';
+        document.getElementById('bstatus').textContent='Waiting...';
+      }
+    }
+
+    const sn=localStorage.getItem('fm_buddy_name')||localStorage.getItem('fm_username')||'';
+    const sr=localStorage.getItem('fm_buddy_room')||'';
+    if(sn)document.getElementById('myname').value=sn;
+    if(sr)document.getElementById('rcode').value=sr;
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard — FocusMirror</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;padding-bottom:40px;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px;max-width:900px;margin:0 auto;}
+    .logo{font-size:16px;font-weight:700;color:#1D9E75;}
+    .logo span{color:#fff;}
+    .nl{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
+    .page{max-width:900px;margin:0 auto;padding:0 16px;}
+    .setup-card{background:#111;border:1px solid #222;border-radius:16px;padding:28px;margin-bottom:20px;text-align:center;}
+    .setup-icon{font-size:48px;margin-bottom:16px;}
+    .setup-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+    .setup-desc{font-size:13px;color:#666;margin-bottom:24px;line-height:1.6;}
+    input{width:100%;max-width:300px;background:#1a1a1a;border:2px solid #333;border-radius:12px;padding:13px;color:#fff;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px;outline:none;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;}
+    input:focus{border-color:#1D9E75;}
+    .btn-row{display:flex;gap:8px;justify-content:center;}
+    .btn{padding:12px 28px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;border:none;}
+    .btn-green{background:#1D9E75;color:#000;}
+    .btn-dark{background:#1a1a1a;color:#888;border:1px solid #333;}
+    .dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+    .dash-title{font-size:18px;font-weight:700;}
+    .code-badge{background:#0d2e1f;border:1px solid #1D9E75;color:#1D9E75;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:700;letter-spacing:3px;}
+    .sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+    .sum-card{background:#111;border:1px solid #222;border-radius:12px;padding:14px;text-align:center;}
+    .sum-val{font-size:26px;font-weight:800;color:#1D9E75;}
+    .sum-lbl{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+    .stu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
+    .stu{background:#111;border:1px solid #222;border-radius:14px;padding:14px;transition:all .3s;}
+    .stu.good{border-color:#1D9E75;background:#0a140f;}
+    .stu.warn{border-color:#EF9F27;background:#141000;}
+    .stu.danger{border-color:#E24B4A;background:#140a0a;}
+    .stu.burnout{border-color:#9B59B6;background:#100820;animation:flash 1s infinite;}
+    @keyframes flash{0%,100%{border-color:#9B59B6}50%{border-color:#fff}}
+    .stu-name{font-size:13px;font-weight:600;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .stu-score{font-size:30px;font-weight:800;margin-bottom:8px;}
+    .stu-stats{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:8px;}
+    .stu-state{font-size:9px;padding:2px 8px;border-radius:8px;background:#1a1a1a;display:inline-block;}
+    .stu-warn{font-size:10px;color:#9B59B6;margin-top:6px;}
+    .instr{background:#111;border:1px solid #222;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#555;line-height:1.8;}
+    .instr b{color:#fff;}
+    .dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;margin-right:6px;animation:p 2s infinite;}
+    @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+    .waiting{text-align:center;padding:50px;color:#333;}
+    .hidden{display:none;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Focus<span>Mirror</span></div>
+    <a href="/app" class="nl">← Back to App</a>
+  </nav>
+
+  <div class="page">
+    <div class="setup-card" id="setup">
+      <div class="setup-icon">🏫</div>
+      <div class="setup-title">Teacher Dashboard</div>
+      <div class="setup-desc">Create a class code and share it with students. Watch their real-time focus scores during study sessions. Get alerted when students show burnout signs.</div>
+      <input id="ccode" placeholder="CLASS CODE" maxlength="8">
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="startDash()">Start Dashboard</button>
+        <button class="btn btn-dark" onclick="genCode()">Generate Code</button>
+      </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <div class="dash-header">
+        <div><span class="dot"></span><span class="dash-title" id="dtitle">Class Session</span></div>
+        <div class="code-badge" id="dcode">------</div>
+      </div>
+
+      <div class="instr">
+        📱 Tell students: Open <b>focusmirror.onrender.com/app</b> → Scroll down to <b>Join Class</b> → Enter code <b id="icode">------</b> → Start Tracking
+      </div>
+
+      <div class="sum-grid">
+        <div class="sum-card"><div class="sum-val" id="sstu">0</div><div class="sum-lbl">Students</div></div>
+        <div class="sum-card"><div class="sum-val" id="savg">--</div><div class="sum-lbl">Avg Focus</div></div>
+        <div class="sum-card"><div class="sum-val" id="stop">--</div><div class="sum-lbl">Top Score</div></div>
+        <div class="sum-card"><div class="sum-val" id="sburn" style="color:#9B59B6">0</div><div class="sum-lbl">Need Break</div></div>
+      </div>
+
+      <div class="stu-grid" id="sgrid">
+        <div class="waiting">👩‍🎓<br><br>Waiting for students...</div>
+      </div>
+
+      <br>
+      <div style="text-align:center">
+        <button class="btn btn-dark" onclick="leaveDash()">End Session</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    let socket, classCode;
+
+    function sc(s){return s>=70?'#1D9E75':s>=45?'#EF9F27':'#E24B4A';}
+
+    function genCode(){
+      const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let c='';for(let i=0;i<6;i++)c+=ch[Math.floor(Math.random()*ch.length)];
+      document.getElementById('ccode').value=c;
+    }
+
+    function startDash(){
+      classCode=document.getElementById('ccode').value.trim().toUpperCase();
+      if(!classCode){alert('Enter or generate a class code');return;}
+      if(!socket){socket=io();socket.on('class_update',onUpdate);}
+      socket.emit('join_class',{class_code:classCode,name:'Teacher',role:'teacher'});
+      document.getElementById('setup').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('dtitle').textContent='Class: '+classCode;
+      document.getElementById('dcode').textContent=classCode;
+      document.getElementById('icode').textContent=classCode;
+    }
+
+    function leaveDash(){
+      if(socket)socket.disconnect();socket=null;
+      document.getElementById('setup').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+    }
+
+    function cardClass(s,b){
+      if(b!==null&&b!==undefined&&b<=3)return 'stu burnout';
+      if(s>=70)return 'stu good';
+      if(s>=45)return 'stu warn';
+      return 'stu danger';
+    }
+
+    function onUpdate(data){
+      const students=Object.values(data).filter(s=>s.name!=='Teacher');
+      const grid=document.getElementById('sgrid');
+      if(!students.length){
+        grid.innerHTML='<div class="waiting">👩‍🎓<br><br>Waiting for students...<br>Share the class code above</div>';
+        document.getElementById('sstu').textContent='0';
+        document.getElementById('savg').textContent='--';
+        document.getElementById('stop').textContent='--';
+        document.getElementById('sburn').textContent='0';
+        return;
+      }
+      const scores=students.map(s=>s.score);
+      const avg=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+      const top=Math.max(...scores);
+      const burnCount=students.filter(s=>s.burnout_mins!==null&&s.burnout_mins!==undefined&&s.burnout_mins<=3).length;
+      document.getElementById('sstu').textContent=students.length;
+      document.getElementById('savg').textContent=avg;
+      document.getElementById('savg').style.color=sc(avg);
+      document.getElementById('stop').textContent=top;
+      document.getElementById('sburn').textContent=burnCount;
+      grid.innerHTML=students.sort((a,b)=>b.score-a.score).map(s=>`
+        <div class="${cardClass(s.score,s.burnout_mins)}">
+          <div class="stu-name">${s.name}</div>
+          <div class="stu-score" style="color:${sc(s.score)}">${s.score}</div>
+          <div class="stu-stats"><span>Posture: ${s.posture}</span><span>Stress: ${s.stress}</span></div>
+          <div class="stu-state">${s.state||'TRACKING'}</div>
+          ${s.burnout_mins!==null&&s.burnout_mins!==undefined&&s.burnout_mins<=3?'<div class="stu-warn">⚠ Burnout in '+s.burnout_mins+'min!</div>':''}
+        </div>`).join('');
+    }
+
+    genCode();
+  </script>
+</body>
+</html>
