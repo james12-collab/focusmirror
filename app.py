@@ -93,6 +93,8 @@ def api_signup():
         session.permanent = True
         session['display_name'] = result
         session['username'] = d['username'].strip().lower()
+        session['age_group'] = d.get('age_group', 'unknown')
+        session['ai_consent'] = d.get('ai_consent', False)
         return jsonify({"success": True, "display_name": result})
     return jsonify({"success": False, "error": result})
 
@@ -199,6 +201,10 @@ def world():
 @app.route('/exam')
 def exam():
     return render_template('exam.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
 
 # API ROUTES
 @app.route('/api/sessions')

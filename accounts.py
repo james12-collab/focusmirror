@@ -38,7 +38,10 @@ def signup(username, password):
         "username": username,
         "display_name": username.capitalize(),
         "password_hash": hashed,
-        "salt": salt
+        "salt": salt,
+        "age_group": "unknown",
+        "ai_consent": False,
+        "created": __import__('time').strftime("%Y-%m-%d")
     }
     save_accounts(accounts)
     return True, username.capitalize()
