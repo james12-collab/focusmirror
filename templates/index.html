@@ -288,6 +288,58 @@
     .midnight-override.used { color:#222; cursor:not-allowed; text-decoration:none; }
     .suggestion-tag { font-size:10px; color:#444; font-style:italic; margin-top:6px; display:block; }
 
+  
+    .mascot-wrap { max-width:480px; margin:0 auto 12px; display:flex; align-items:center; gap:14px; background:#111; border:1px solid #1a1a1a; border-radius:16px; padding:14px 16px; }
+    .mascot-face { width:64px; height:64px; flex-shrink:0; position:relative; }
+    .mascot-face svg { width:64px; height:64px; }
+    .mascot-bubble { flex:1; }
+    .mascot-name { font-size:9px; color:#555; text-transform:uppercase; letter-spacing:2px; margin-bottom:4px; }
+    .mascot-msg { font-size:13px; color:#fff; line-height:1.5; font-weight:500; }
+    .mascot-mood { font-size:10px; margin-top:4px; }
+    .mascot-mood.great { color:#1D9E75; }
+    .mascot-mood.good { color:#4A9EEF; }
+    .mascot-mood.warn { color:#EF9F27; }
+    .mascot-mood.danger { color:#E24B4A; }
+    @keyframes mascot-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    @keyframes mascot-shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
+    @keyframes mascot-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    .bounce { animation:mascot-bounce 1s infinite; }
+    .shake { animation:mascot-shake 0.5s infinite; }
+    .pulse { animation:mascot-pulse 2s infinite; }
+
+  
+    .share-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:10002; display:none; align-items:center; justify-content:center; padding:20px; flex-direction:column; }
+    .share-overlay.show { display:flex; }
+    .share-card-wrap { width:100%; max-width:340px; margin-bottom:16px; }
+    .share-card { background:linear-gradient(135deg,#0d2e1f 0%,#0a0a2e 60%,#1a0a2e 100%); border-radius:20px; padding:28px 24px; text-align:center; border:1px solid rgba(29,158,117,0.3); }
+    .sc-brand { font-size:11px; color:#1D9E75; letter-spacing:3px; font-weight:700; margin-bottom:20px; }
+    .sc-grade-wrap { width:80px; height:80px; border-radius:50%; border:3px solid #1D9E75; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+    .sc-grade { font-size:38px; font-weight:900; }
+    .sc-name { font-size:16px; font-weight:700; color:#fff; margin-bottom:4px; }
+    .sc-date { font-size:10px; color:rgba(255,255,255,0.3); margin-bottom:20px; }
+    .sc-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+    .sc-stat { background:rgba(255,255,255,0.05); border-radius:10px; padding:10px 6px; }
+    .sc-stat-val { font-size:20px; font-weight:800; color:#1D9E75; }
+    .sc-stat-lbl { font-size:9px; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+    .sc-insight { background:rgba(29,158,117,0.08); border:1px solid rgba(29,158,117,0.2); border-radius:10px; padding:10px 14px; font-size:11px; color:rgba(255,255,255,0.6); line-height:1.6; margin-bottom:16px; }
+    .sc-streak { font-size:11px; color:#EF9F27; margin-bottom:12px; }
+    .sc-footer { font-size:9px; color:rgba(255,255,255,0.15); letter-spacing:2px; }
+    .share-actions { display:flex; flex-direction:column; gap:8px; width:100%; max-width:340px; }
+    .share-action-btn { padding:12px; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer; border:none; width:100%; }
+    .btn-whatsapp { background:#25D366; color:#000; }
+    .btn-download { background:#1D9E75; color:#000; }
+    .btn-close-share { background:#1a1a1a; color:#666; border:1px solid #333; }
+
+  
+    .freeze-btn { padding:6px 12px; background:rgba(74,158,239,0.1); color:#4A9EEF; border:1px solid #4A9EEF; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s; }
+    .freeze-btn:hover { background:rgba(74,158,239,0.2); }
+    .freeze-btn.used { background:#1a1a1a; color:#333; border-color:#2a2a2a; cursor:not-allowed; }
+    .freeze-popup { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10003; background:#111; border:1px solid #4A9EEF; border-radius:14px; padding:14px 20px; text-align:center; display:none; max-width:300px; width:90%; }
+    .freeze-popup.show { display:block; animation:slideUp .3s ease; }
+    @keyframes slideUp { from{transform:translateX(-50%) translateY(20px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+    .freeze-popup-title { font-size:14px; font-weight:700; color:#4A9EEF; margin-bottom:6px; }
+    .freeze-popup-desc { font-size:11px; color:#666; line-height:1.6; }
+
   </style>
 </head>
 <body>
@@ -374,7 +426,10 @@
         <div class="report-emotion">😊 Engagement <span id="rep-eng2">0</span></div>
       </div>
       <div class="report-insight" id="rep-insight">Loading insight...</div>
-      <button class="report-btn" onclick="closeReport()">Save &amp; Reset →</button>
+      <div style="display:flex;gap:8px;">
+        <button class="report-btn" style="flex:1" onclick="closeReport()">Save &amp; Reset →</button>
+        <button class="report-btn" style="flex:1;background:#0d2e1f;color:#1D9E75;border:1px solid #1D9E75" onclick="generateShareCard()">📸 Share</button>
+      </div>
     </div>
   </div>
 
@@ -409,7 +464,10 @@
         <div class="streak-msg" id="streak-msg">Keep it going!</div>
       </div>
     </div>
-    <button class="pdf-btn" onclick="downloadPDF()">📄 Download Report</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="freeze-btn" id="freeze-btn" onclick="freezeStreak()">❄ Freeze</button>
+      <button class="pdf-btn" onclick="downloadPDF()">📄 Download Report</button>
+    </div>
   </div>
 
   <div class="account-bar" id="account-bar">
@@ -487,6 +545,33 @@
   <button class="reset-btn" onclick="resetSession()">Save Score + Reset (next visitor)</button>
 
 
+  <div class="mascot-wrap" id="mascot-wrap">
+    <div class="mascot-face" id="mascot-face">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" id="mascot-svg">
+        <!-- Body -->
+        <circle cx="32" cy="32" r="28" fill="#1D9E75" id="m-body"/>
+        <!-- Eyes -->
+        <ellipse cx="22" cy="26" rx="5" ry="6" fill="white" id="m-leye-white"/>
+        <circle cx="23" cy="27" r="3" fill="#0a0a0a" id="m-leye"/>
+        <ellipse cx="42" cy="26" rx="5" ry="6" fill="white" id="m-reye-white"/>
+        <circle cx="43" cy="27" r="3" fill="#0a0a0a" id="m-reye"/>
+        <!-- Eyebrows -->
+        <path d="M17 19 Q22 16 27 19" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" id="m-lbrow"/>
+        <path d="M37 19 Q42 16 47 19" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" id="m-rbrow"/>
+        <!-- Mouth -->
+        <path d="M22 42 Q32 50 42 42" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" id="m-mouth"/>
+        <!-- Cheeks -->
+        <circle cx="16" cy="36" r="5" fill="rgba(255,255,255,0.2)" id="m-lcheek"/>
+        <circle cx="48" cy="36" r="5" fill="rgba(255,255,255,0.2)" id="m-rcheek"/>
+      </svg>
+    </div>
+    <div class="mascot-bubble">
+      <div class="mascot-name">NOVA — Your Focus Companion</div>
+      <div class="mascot-msg" id="mascot-msg">Hi! Enter your name and start tracking. I will be with you every step of the way! 🌟</div>
+      <div class="mascot-mood" id="mascot-mood"></div>
+    </div>
+  </div>
+
   <div class="pom-card" id="pom-card">
     <div class="pom-mode" id="pom-mode">🍅 ADAPTIVE POMODORO</div>
     <div class="pom-ring-wrap">
@@ -540,6 +625,37 @@
   </div>
 
   
+  <div class="freeze-popup" id="freeze-popup">
+    <div class="freeze-popup-title">❄ Streak Frozen!</div>
+    <div class="freeze-popup-desc">Your streak is safe for today. Rest well. Come back tomorrow stronger. 💪</div>
+  </div>
+
+  <div class="share-overlay" id="share-overlay">
+    <div class="share-card-wrap">
+      <div class="share-card" id="share-card">
+        <div class="sc-brand">⚡ FOCUSMIRROR</div>
+        <div class="sc-grade-wrap">
+          <div class="sc-grade" id="sc-grade" style="color:#1D9E75">A</div>
+        </div>
+        <div class="sc-name" id="sc-name">Student</div>
+        <div class="sc-date" id="sc-date"></div>
+        <div class="sc-stats">
+          <div class="sc-stat"><div class="sc-stat-val" id="sc-score">0</div><div class="sc-stat-lbl">Score</div></div>
+          <div class="sc-stat"><div class="sc-stat-val" id="sc-time">0m</div><div class="sc-stat-lbl">Duration</div></div>
+          <div class="sc-stat"><div class="sc-stat-val" id="sc-eng">0</div><div class="sc-stat-lbl">Engagement</div></div>
+        </div>
+        <div class="sc-insight" id="sc-insight"></div>
+        <div class="sc-streak" id="sc-streak"></div>
+        <div class="sc-footer">focusmirror.onrender.com · AI Study Tracker</div>
+      </div>
+    </div>
+    <div class="share-actions">
+      <button class="share-action-btn btn-whatsapp" onclick="shareToWhatsApp()">📱 Share on WhatsApp</button>
+      <button class="share-action-btn btn-download" onclick="downloadCard()">📥 Save Image</button>
+      <button class="share-action-btn btn-close-share" onclick="closeShareCard()">Close</button>
+    </div>
+  </div>
+
   <div class="badge-overlay" id="badge-overlay" onclick="closeBadgePopup()"></div>
   <div class="badge-popup" id="badge-popup">
     <div class="badge-popup-icon" id="bp-icon">🏆</div>
@@ -769,6 +885,7 @@
       if (d.score >= 80 && lastScoreAlert < 80) { playChime('positive'); }
       lastScoreAlert = d.score;
       adaptPomodoro(d.score);
+      updateMascot(d.score, d.burnout_mins, d.microsleep, d.new_badge);
       updateBenchmark(d.score);
       emitScores(d.score, d.posture, d.stress, d.state, d.burnout_mins);
       const box=document.getElementById('alert-box');
@@ -1034,6 +1151,58 @@
     .midnight-override { font-size:11px; color:#333; cursor:pointer; text-decoration:underline; margin-top:12px; }
     .midnight-override.used { color:#222; cursor:not-allowed; text-decoration:none; }
     .suggestion-tag { font-size:10px; color:#444; font-style:italic; margin-top:6px; display:block; }
+
+  
+    .mascot-wrap { max-width:480px; margin:0 auto 12px; display:flex; align-items:center; gap:14px; background:#111; border:1px solid #1a1a1a; border-radius:16px; padding:14px 16px; }
+    .mascot-face { width:64px; height:64px; flex-shrink:0; position:relative; }
+    .mascot-face svg { width:64px; height:64px; }
+    .mascot-bubble { flex:1; }
+    .mascot-name { font-size:9px; color:#555; text-transform:uppercase; letter-spacing:2px; margin-bottom:4px; }
+    .mascot-msg { font-size:13px; color:#fff; line-height:1.5; font-weight:500; }
+    .mascot-mood { font-size:10px; margin-top:4px; }
+    .mascot-mood.great { color:#1D9E75; }
+    .mascot-mood.good { color:#4A9EEF; }
+    .mascot-mood.warn { color:#EF9F27; }
+    .mascot-mood.danger { color:#E24B4A; }
+    @keyframes mascot-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    @keyframes mascot-shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
+    @keyframes mascot-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    .bounce { animation:mascot-bounce 1s infinite; }
+    .shake { animation:mascot-shake 0.5s infinite; }
+    .pulse { animation:mascot-pulse 2s infinite; }
+
+  
+    .share-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:10002; display:none; align-items:center; justify-content:center; padding:20px; flex-direction:column; }
+    .share-overlay.show { display:flex; }
+    .share-card-wrap { width:100%; max-width:340px; margin-bottom:16px; }
+    .share-card { background:linear-gradient(135deg,#0d2e1f 0%,#0a0a2e 60%,#1a0a2e 100%); border-radius:20px; padding:28px 24px; text-align:center; border:1px solid rgba(29,158,117,0.3); }
+    .sc-brand { font-size:11px; color:#1D9E75; letter-spacing:3px; font-weight:700; margin-bottom:20px; }
+    .sc-grade-wrap { width:80px; height:80px; border-radius:50%; border:3px solid #1D9E75; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+    .sc-grade { font-size:38px; font-weight:900; }
+    .sc-name { font-size:16px; font-weight:700; color:#fff; margin-bottom:4px; }
+    .sc-date { font-size:10px; color:rgba(255,255,255,0.3); margin-bottom:20px; }
+    .sc-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+    .sc-stat { background:rgba(255,255,255,0.05); border-radius:10px; padding:10px 6px; }
+    .sc-stat-val { font-size:20px; font-weight:800; color:#1D9E75; }
+    .sc-stat-lbl { font-size:9px; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+    .sc-insight { background:rgba(29,158,117,0.08); border:1px solid rgba(29,158,117,0.2); border-radius:10px; padding:10px 14px; font-size:11px; color:rgba(255,255,255,0.6); line-height:1.6; margin-bottom:16px; }
+    .sc-streak { font-size:11px; color:#EF9F27; margin-bottom:12px; }
+    .sc-footer { font-size:9px; color:rgba(255,255,255,0.15); letter-spacing:2px; }
+    .share-actions { display:flex; flex-direction:column; gap:8px; width:100%; max-width:340px; }
+    .share-action-btn { padding:12px; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer; border:none; width:100%; }
+    .btn-whatsapp { background:#25D366; color:#000; }
+    .btn-download { background:#1D9E75; color:#000; }
+    .btn-close-share { background:#1a1a1a; color:#666; border:1px solid #333; }
+
+  
+    .freeze-btn { padding:6px 12px; background:rgba(74,158,239,0.1); color:#4A9EEF; border:1px solid #4A9EEF; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s; }
+    .freeze-btn:hover { background:rgba(74,158,239,0.2); }
+    .freeze-btn.used { background:#1a1a1a; color:#333; border-color:#2a2a2a; cursor:not-allowed; }
+    .freeze-popup { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10003; background:#111; border:1px solid #4A9EEF; border-radius:14px; padding:14px 20px; text-align:center; display:none; max-width:300px; width:90%; }
+    .freeze-popup.show { display:block; animation:slideUp .3s ease; }
+    @keyframes slideUp { from{transform:translateX(-50%) translateY(20px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+    .freeze-popup-title { font-size:14px; font-weight:700; color:#4A9EEF; margin-bottom:6px; }
+    .freeze-popup-desc { font-size:11px; color:#666; line-height:1.6; }
 
   </style>
 </head>
@@ -1369,6 +1538,275 @@
       } catch(e) { console.log('Pattern error:', e); }
     }
 
+
+
+
+
+
+    // STREAK FREEZE
+    const FREEZE_KEY = 'fm_streak_freeze';
+
+    function getFreezeData() {
+      try {
+        const d = JSON.parse(localStorage.getItem(FREEZE_KEY) || '{}');
+        const weekStart = getWeekStart();
+        if (d.week !== weekStart) {
+          return { week: weekStart, used: false, frozen_date: null };
+        }
+        return d;
+      } catch(e) {
+        return { week: getWeekStart(), used: false, frozen_date: null };
+      }
+    }
+
+    function freezeStreak() {
+      const data = getFreezeData();
+      const btn = document.getElementById('freeze-btn');
+
+      if (data.used) {
+        alert('You have already used your streak freeze this week. Come back next week!');
+        return;
+      }
+
+      if (!confirm('Use your weekly streak freeze? This will protect your streak for today even if you do not complete a session.')) return;
+
+      data.used = true;
+      data.frozen_date = new Date().toISOString().split('T')[0];
+      localStorage.setItem(FREEZE_KEY, JSON.stringify(data));
+
+      btn.textContent = '❄ Frozen!';
+      btn.className = 'freeze-btn used';
+
+      const popup = document.getElementById('freeze-popup');
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 4000);
+
+      speak('Streak frozen! Your progress is safe for today. Rest well.', 'freeze');
+    }
+
+    function checkFreezeStatus() {
+      const data = getFreezeData();
+      const btn = document.getElementById('freeze-btn');
+      if (!btn) return;
+      if (data.used) {
+        btn.textContent = '❄ Used';
+        btn.className = 'freeze-btn used';
+      }
+    }
+
+
+    // SHAREABLE SESSION CARD
+    function getGradeColor(grade) {
+      const colors = {'A+':'#1D9E75','A':'#1D9E75','B':'#4A9EEF','C':'#EF9F27','D':'#BA7517','F':'#E24B4A'};
+      return colors[grade] || '#888';
+    }
+
+    function generateShareCard() {
+      const name = document.getElementById('name-input').value.trim() || 'Student';
+      const score = parseInt(document.getElementById('best-val').textContent) || 0;
+      const duration = document.getElementById('session-val').textContent || '0';
+      const engagement = document.getElementById('engagement-val').textContent || '0';
+      const streak = document.getElementById('streak-num') ? document.getElementById('streak-num').textContent : '0';
+
+      function getGrade(s) {
+        if (s >= 90) return 'A+';
+        if (s >= 80) return 'A';
+        if (s >= 70) return 'B';
+        if (s >= 60) return 'C';
+        if (s >= 50) return 'D';
+        return 'F';
+      }
+
+      function getInsight(s) {
+        if (s >= 85) return '🌟 Elite focus session. Brain was fully in the zone.';
+        if (s >= 70) return '💪 Strong performance. Consistent and engaged throughout.';
+        if (s >= 55) return '📈 Decent session. Remove one distraction to reach 80+.';
+        if (s >= 40) return '⚡ Developing focus. Short consistent sessions beat long unfocused ones.';
+        return '🔋 Rest and recover. Your next session will be stronger.';
+      }
+
+      const grade = getGrade(score);
+      const color = getGradeColor(grade);
+      const now = new Date().toLocaleDateString('en', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+      document.getElementById('sc-grade').textContent = grade;
+      document.getElementById('sc-grade').style.color = color;
+      document.getElementById('sc-grade-wrap') && (document.querySelector('.sc-grade-wrap').style.borderColor = color);
+      document.getElementById('sc-name').textContent = name;
+      document.getElementById('sc-date').textContent = now;
+      document.getElementById('sc-score').textContent = score;
+      document.getElementById('sc-time').textContent = duration + 'm';
+      document.getElementById('sc-eng').textContent = engagement;
+      document.getElementById('sc-insight').textContent = getInsight(score);
+      document.getElementById('sc-streak').textContent = streak > 0 ? '🔥 ' + streak + ' Day Study Streak' : '';
+
+      document.getElementById('share-overlay').classList.add('show');
+    }
+
+    function closeShareCard() {
+      document.getElementById('share-overlay').classList.remove('show');
+    }
+
+    function shareToWhatsApp() {
+      const name = document.getElementById('name-input').value.trim() || 'Student';
+      const score = document.getElementById('best-val').textContent || '0';
+      const streak = document.getElementById('streak-num') ? document.getElementById('streak-num').textContent : '0';
+      function getGrade(s) {
+        s = parseInt(s);
+        if (s >= 90) return 'A+'; if (s >= 80) return 'A';
+        if (s >= 70) return 'B'; if (s >= 60) return 'C';
+        if (s >= 50) return 'D'; return 'F';
+      }
+      const grade = getGrade(score);
+      const text = `I just completed a study session on FocusMirror!%0A%0A🧠 Focus Score: ${score}/100%0A📊 Grade: ${grade}%0A🔥 Study Streak: ${streak} days%0A%0AMy AI detected my real focus — not just time spent studying.%0A%0ATry it FREE 👇%0Afocusmirror.onrender.com`;
+      window.open('https://wa.me/?text=' + text, '_blank');
+    }
+
+    function downloadCard() {
+      alert('Tip: Take a screenshot of this card to save it! On Android: hold power + volume down. On iPhone: power + home button.');
+    }
+
+
+    // NOVA — AI MASCOT
+    const MASCOT_MESSAGES = {
+      starting: [
+        "Hi! I am Nova. Let us study smarter together! 🌟",
+        "Ready to discover your real focus? Let us go! 🚀",
+        "I will be watching your focus so you can focus on studying! 👁"
+      ],
+      great: [
+        "You are absolutely crushing it right now! 🔥",
+        "This is elite focus! Your brain is fully in the zone! ⚡",
+        "Incredible! This is what peak performance looks like! 🏆",
+        "I have never seen focus like this! You are unstoppable! 💪",
+        "Your brain is operating at maximum capacity. Keep going! 🧠"
+      ],
+      good: [
+        "Solid focus! You are doing really well! 😊",
+        "Good momentum! Keep this up and your score will climb! 📈",
+        "Nice work! Your brain is engaged and working well! 👍",
+        "Consistent focus is the secret weapon. You have it! 🎯"
+      ],
+      warn: [
+        "Hey, I notice your focus dropping a little. Sit up straight! 🪑",
+        "Your energy is dipping. Take 3 deep breaths with me. 🌬",
+        "Focus score dropping. Remove any distractions around you! 📱",
+        "You can do better than this! I believe in you! Come on! 💫"
+      ],
+      danger: [
+        "Your brain is really struggling right now. That is okay! 🤗",
+        "Low focus detected. Maybe take a 5 minute break? ☕",
+        "I am worried about you. Your focus is very low. Rest first! 💤",
+        "Your brain is sending SOS signals. Please take a break! 🆘"
+      ],
+      burnout: [
+        "STOP. Your brain has hit its limit. Take a break NOW! ⛔",
+        "Burnout incoming! No amount of willpower fixes this. Rest! 🛑",
+        "I care about you too much to let you continue. Break time! ❤"
+      ],
+      microsleep: [
+        "You almost fell asleep! Your body is telling you something! 😴",
+        "Micro-sleep detected! Your brain desperately needs rest! 🛌",
+        "You fell asleep for a second! Please take a proper break! 💤"
+      ],
+      milestone: [
+        "NEW PERSONAL BEST! I am so proud of you! 🎉",
+        "You just hit a milestone! This is incredible progress! 🌟",
+        "Badge unlocked! You are building amazing study habits! 🏅"
+      ]
+    };
+
+    let lastMascotState = '';
+    let lastMascotMsg = '';
+    let mascotMsgIndex = 0;
+
+    function getMascotState(score, burnoutMins, microsleep) {
+      if (microsleep) return 'microsleep';
+      if (burnoutMins !== null && burnoutMins !== undefined && burnoutMins <= 3) return 'burnout';
+      if (score === 0) return 'starting';
+      if (score >= 80) return 'great';
+      if (score >= 60) return 'good';
+      if (score >= 40) return 'warn';
+      return 'danger';
+    }
+
+    function updateMascot(score, burnoutMins, microsleep, newBadge) {
+      const face = document.getElementById('mascot-face');
+      const msg = document.getElementById('mascot-msg');
+      const mood = document.getElementById('mascot-mood');
+      const body = document.getElementById('m-body');
+      const mouth = document.getElementById('m-mouth');
+      const lbrow = document.getElementById('m-lbrow');
+      const rbrow = document.getElementById('m-rbrow');
+      const leye = document.getElementById('m-leye');
+      const reye = document.getElementById('m-reye');
+
+      let state = getMascotState(score, burnoutMins, microsleep);
+      if (newBadge) state = 'milestone';
+
+      // Only update message when state changes or every 30 seconds
+      if (state !== lastMascotState) {
+        lastMascotState = state;
+        mascotMsgIndex = 0;
+        const messages = MASCOT_MESSAGES[state] || MASCOT_MESSAGES.starting;
+        const newMsg = messages[Math.floor(Math.random() * messages.length)];
+        msg.textContent = newMsg;
+      }
+
+      // Update face based on state
+      face.className = 'mascot-face';
+      if (state === 'great' || state === 'milestone') {
+        body.setAttribute('fill', '#1D9E75');
+        mouth.setAttribute('d', 'M20 40 Q32 52 44 40');
+        lbrow.setAttribute('d', 'M17 17 Q22 13 27 17');
+        rbrow.setAttribute('d', 'M37 17 Q42 13 47 17');
+        leye.setAttribute('cy', '25');
+        reye.setAttribute('cy', '25');
+        mood.className = 'mascot-mood great';
+        mood.textContent = '😄 Nova is thrilled!';
+        face.classList.add('bounce');
+      } else if (state === 'good') {
+        body.setAttribute('fill', '#1D9E75');
+        mouth.setAttribute('d', 'M22 42 Q32 50 42 42');
+        lbrow.setAttribute('d', 'M17 19 Q22 16 27 19');
+        rbrow.setAttribute('d', 'M37 19 Q42 16 47 19');
+        leye.setAttribute('cy', '27');
+        reye.setAttribute('cy', '27');
+        mood.className = 'mascot-mood good';
+        mood.textContent = '😊 Nova is happy!';
+        face.classList.add('pulse');
+      } else if (state === 'warn') {
+        body.setAttribute('fill', '#BA7517');
+        mouth.setAttribute('d', 'M24 44 Q32 40 40 44');
+        lbrow.setAttribute('d', 'M17 21 Q22 19 27 21');
+        rbrow.setAttribute('d', 'M37 21 Q42 19 47 21');
+        leye.setAttribute('cy', '27');
+        reye.setAttribute('cy', '27');
+        mood.className = 'mascot-mood warn';
+        mood.textContent = '😟 Nova is concerned';
+        face.classList.add('pulse');
+      } else if (state === 'danger' || state === 'burnout' || state === 'microsleep') {
+        body.setAttribute('fill', '#E24B4A');
+        mouth.setAttribute('d', 'M22 46 Q32 40 42 46');
+        lbrow.setAttribute('d', 'M17 23 Q22 20 27 22');
+        rbrow.setAttribute('d', 'M37 22 Q42 20 47 23');
+        leye.setAttribute('cy', '28');
+        reye.setAttribute('cy', '28');
+        mood.className = 'mascot-mood danger';
+        mood.textContent = '😰 Nova is worried!';
+        face.classList.add('shake');
+      } else {
+        body.setAttribute('fill', '#1D9E75');
+        mouth.setAttribute('d', 'M22 42 Q32 50 42 42');
+        lbrow.setAttribute('d', 'M17 19 Q22 16 27 19');
+        rbrow.setAttribute('d', 'M37 19 Q42 16 47 19');
+        leye.setAttribute('cy', '27');
+        reye.setAttribute('cy', '27');
+        mood.className = 'mascot-mood good';
+        mood.textContent = '';
+        face.classList.add('pulse');
+      }
+    }
 
 
     // ADAPTIVE POMODORO
@@ -1884,6 +2322,7 @@
     loadAccount();
     loadSchedule();
     checkMidnightLock();
+    checkFreezeStatus();
     loadAccount();
 
     if('serviceWorker' in navigator){
