@@ -206,6 +206,14 @@ def exam():
 def privacy():
     return render_template('privacy.html')
 
+@app.route('/parent')
+def parent():
+    return render_template('parent.html')
+
+@app.route('/schools')
+def schools():
+    return render_template('schools.html')
+
 # API ROUTES
 @app.route('/api/sessions')
 def api_sessions():

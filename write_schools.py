@@ -1,0 +1,311 @@
+f = open('templates/schools.html', 'w', encoding='utf-8')
+f.write("""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusMirror for Schools</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--green:#1D9E75;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;}
+    body{background:var(--dark);color:#fff;font-family:'Inter',sans-serif;padding-bottom:60px;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:900px;margin:0 auto;}
+    .logo{font-size:18px;font-weight:800;color:var(--green);}
+    .logo span{color:#fff;}
+    .nav-links{display:flex;gap:12px;}
+    .nl{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
+    .nl.cta{background:var(--green);color:#000;border-color:var(--green);font-weight:700;}
+    .hero{text-align:center;padding:60px 24px 50px;max-width:700px;margin:0 auto;}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:#0d2e1f;border:1px solid var(--green);color:var(--green);padding:5px 14px;border-radius:20px;font-size:12px;margin-bottom:24px;}
+    .hero h1{font-size:clamp(28px,6vw,48px);font-weight:800;line-height:1.1;margin-bottom:20px;letter-spacing:-1px;}
+    .hero h1 span{color:var(--green);}
+    .hero p{font-size:15px;color:#666;line-height:1.7;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto;}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .btn-primary{background:var(--green);color:#000;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s;display:inline-block;}
+    .btn-primary:hover{opacity:.85;transform:translateY(-2px);}
+    .btn-secondary{background:transparent;color:#fff;padding:14px 28px;border-radius:12px;font-size:14px;border:1px solid #333;text-decoration:none;}
+    .section{max-width:900px;margin:0 auto;padding:60px 24px;}
+    .section-tag{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;}
+    .section h2{font-size:clamp(22px,4vw,32px);font-weight:700;margin-bottom:40px;letter-spacing:-0.5px;}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+    .feature-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:border-color .2s;}
+    .feature-card:hover{border-color:var(--green);}
+    .feat-icon{font-size:32px;margin-bottom:14px;}
+    .feat-title{font-size:16px;font-weight:700;margin-bottom:8px;}
+    .feat-desc{font-size:13px;color:#666;line-height:1.6;}
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+    .pricing-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;}
+    .pricing-card.featured{border-color:var(--green);background:#0a140f;}
+    .plan-badge{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+    .plan-name{font-size:20px;font-weight:800;margin-bottom:8px;}
+    .plan-price{font-size:36px;font-weight:800;color:var(--green);margin-bottom:4px;}
+    .plan-price span{font-size:14px;color:#666;font-weight:400;}
+    .plan-desc{font-size:12px;color:#666;margin-bottom:20px;line-height:1.6;}
+    .plan-features{list-style:none;margin-bottom:24px;}
+    .plan-features li{font-size:13px;color:#888;padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+    .plan-features li:last-child{border:none;}
+    .plan-features li span{color:var(--green);font-weight:700;}
+    .plan-btn{width:100%;padding:12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
+    .plan-btn.green{background:var(--green);color:#000;}
+    .plan-btn.outline{background:transparent;color:#fff;border:1px solid #333;}
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:40px;}
+    .stat-item{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;}
+    .stat-num{font-size:32px;font-weight:800;color:var(--green);}
+    .stat-lbl{font-size:11px;color:#555;margin-top:4px;}
+    .testimonial{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;}
+    .test-text{font-size:14px;color:#888;line-height:1.7;margin-bottom:16px;font-style:italic;}
+    .test-author{font-size:12px;color:var(--green);font-weight:600;}
+    .contact-form{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:560px;margin:0 auto;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-field{margin-bottom:14px;}
+    .form-field.full{grid-column:1/-1;}
+    .form-field label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:2px;display:block;margin-bottom:6px;}
+    .form-field input,.form-field select,.form-field textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif;}
+    .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--green);}
+    .form-field textarea{height:100px;resize:vertical;}
+    .form-field select option{background:#1a1a1a;}
+    .submit-btn{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;}
+    .success-msg{background:#0d2e1f;border:1px solid var(--green);border-radius:12px;padding:16px;text-align:center;font-size:13px;color:var(--green);display:none;margin-top:12px;}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;cursor:pointer;}
+    .faq-q{font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+    .faq-a{font-size:13px;color:#666;line-height:1.6;margin-top:10px;display:none;}
+    .faq-item.open .faq-a{display:block;}
+    .faq-item.open .faq-arrow{transform:rotate(180deg);}
+    .faq-arrow{transition:transform .2s;}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Focus<span>Mirror</span></div>
+    <div class="nav-links">
+      <a href="/" class="nl">Home</a>
+      <a href="/app" class="nl">Try Free</a>
+      <a href="#contact" class="nl cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🏫 FocusMirror for Schools</div>
+    <h1>Give Every Teacher<br><span>X-Ray Vision</span><br>Into Student Focus</h1>
+    <p>FocusMirror gives teachers real-time cognitive performance data for every student in their class. Not guesses. Not gut feelings. Actual biometric focus data.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Request School Access →</a>
+      <a href="/teacher" class="btn-secondary">See Teacher Dashboard</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section" style="padding-top:0">
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Signals Tracked</div></div>
+      <div class="stat-item"><div class="stat-num">2s</div><div class="stat-lbl">Update Frequency</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Downloads Needed</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Browser Based</div></div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section-tag">What Schools Get</div>
+    <h2>Everything a teacher needs<br>to understand every student.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Live Class Dashboard</div>
+        <div class="feat-desc">See every student's focus level in real time. Color coded — green for focused, yellow for drifting, red for struggling. Identify who needs help instantly.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">⚠</div>
+        <div class="feat-title">Burnout Alerts</div>
+        <div class="feat-desc">FocusMirror predicts cognitive burnout before it happens. Teachers get alerted when a student is about to hit their limit — before they lose the class.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">👨‍👩‍👧</div>
+        <div class="feat-title">Parent Dashboard</div>
+        <div class="feat-desc">Parents see a daily focus summary — High, Medium or Low — without specific scores. Enough to be supportive. Not enough to be controlling.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🧬</div>
+        <div class="feat-title">Student Focus DNA</div>
+        <div class="feat-desc">Every student builds a personal focus profile over time. Teachers can see class-wide peak hours and schedule harder topics when the whole class is sharpest.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🔒</div>
+        <div class="feat-title">Privacy First</div>
+        <div class="feat-desc">No camera footage ever stored. No biometric data sold. GDPR and DPDP compliant. Parental consent built in. Student data belongs to students.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Works on Any Phone</div>
+        <div class="feat-desc">No app download. No expensive hardware. Students open a link on any Android or iPhone and it works. Budget phones included. No WiFi needed beyond initial load.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section">
+    <div class="section-tag">Pricing</div>
+    <h2>Simple pricing.<br>No surprises.</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-badge">For Students</div>
+        <div class="plan-name">Free Forever</div>
+        <div class="plan-price">₹0 <span>/ month</span></div>
+        <div class="plan-desc">Every student gets full access to FocusMirror forever. No credit card. No trial. No catch.</div>
+        <ul class="plan-features">
+          <li><span>✓</span> Live focus tracking</li>
+          <li><span>✓</span> Focus DNA profile</li>
+          <li><span>✓</span> Session report cards</li>
+          <li><span>✓</span> Leaderboard</li>
+          <li><span>✓</span> Achievement badges</li>
+          <li><span>✓</span> Adaptive Pomodoro</li>
+        </ul>
+        <a href="/app" class="plan-btn outline" style="display:block;text-align:center;padding:12px;border-radius:10px;border:1px solid #333;text-decoration:none;font-size:13px;font-weight:700;">Try Free →</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">School Plan</div>
+        <div class="plan-price">₹50 <span>/ student / month</span></div>
+        <div class="plan-desc">Everything students get, plus school-wide tools for teachers and administrators.</div>
+        <ul class="plan-features">
+          <li><span>✓</span> Everything in Free</li>
+          <li><span>✓</span> Live teacher dashboard</li>
+          <li><span>✓</span> Parent dashboard access</li>
+          <li><span>✓</span> Class-wide analytics</li>
+          <li><span>✓</span> Burnout alerts to teacher</li>
+          <li><span>✓</span> Admin reporting</li>
+          <li><span>✓</span> Priority support</li>
+          <li><span>✓</span> Custom class codes</li>
+        </ul>
+        <a href="#contact" class="plan-btn green" style="display:block;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;">Request Access →</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-badge">For Institutions</div>
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Custom <span>pricing</span></div>
+        <div class="plan-desc">For coaching centers, universities and large institutions with 500+ students.</div>
+        <ul class="plan-features">
+          <li><span>✓</span> Everything in School</li>
+          <li><span>✓</span> Dedicated support</li>
+          <li><span>✓</span> Custom integrations</li>
+          <li><span>✓</span> API access</li>
+          <li><span>✓</span> White label option</li>
+          <li><span>✓</span> Research partnership</li>
+        </ul>
+        <a href="#contact" class="plan-btn outline" style="display:block;text-align:center;padding:12px;border-radius:10px;border:1px solid #333;text-decoration:none;font-size:13px;font-weight:700;">Contact Us →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <div class="section-tag">FAQ</div>
+    <h2>Questions schools ask us.</h2>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Does FocusMirror store camera footage? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">No. Never. Camera processing happens entirely on the student's device using Google's BlazeFace model. Only calculated numbers — blink rate, posture score — are sent to our servers. No images, no video, no facial data is ever transmitted or stored.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Is FocusMirror GDPR and DPDP compliant? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Yes. FocusMirror is designed to comply with India's DPDP Act 2023, the EU's GDPR, and COPPA for under-13s. We have explicit consent collection, data deletion mechanisms, and anonymized AI training. Full details in our Privacy Policy.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What devices does it work on? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Any smartphone with a front-facing camera and a modern browser. Android 6+ and iOS 12+ are supported. No download required. Students open a link and it works — including on budget ₹6,000-8,000 Android phones common in Indian schools.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Can parents see specific scores? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">No. Parents see general focus levels — High, Medium or Low — not specific scores. This design choice is intentional. Enough information to be supportive. Not enough to create pressure or surveillance. Students know exactly what parents can see.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">How long does setup take? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Under 5 minutes. The teacher creates a class code. Students open focusmirror.onrender.com on their phone, enter the code, and they are live on the teacher dashboard. No IT department needed. No software installation. No configuration.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Is student data sold to third parties? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Never. Student data is never sold, shared with advertisers, or provided to any third party. Data is used solely to improve each student's personal experience. This is a core product principle, not just a policy.</div>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM -->
+  <div class="section" id="contact">
+    <div class="section-tag">Get Started</div>
+    <h2 style="text-align:center;margin-bottom:32px">Request School Access</h2>
+    <div class="contact-form">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Your Name</label>
+          <input id="f-name" type="text" placeholder="Your full name">
+        </div>
+        <div class="form-field">
+          <label>Role</label>
+          <select id="f-role">
+            <option>Teacher</option>
+            <option>Principal</option>
+            <option>Administrator</option>
+            <option>Coaching Director</option>
+            <option>Parent</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>School / Institution Name</label>
+          <input id="f-school" type="text" placeholder="Name of your school or institution">
+        </div>
+        <div class="form-field">
+          <label>City</label>
+          <input id="f-city" type="text" placeholder="Your city">
+        </div>
+        <div class="form-field">
+          <label>Number of Students</label>
+          <select id="f-students">
+            <option>Under 50</option>
+            <option>50 - 200</option>
+            <option>200 - 500</option>
+            <option>500 - 1000</option>
+            <option>1000+</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Message (Optional)</label>
+          <textarea id="f-msg" placeholder="Tell us about your school and how you plan to use FocusMirror..."></textarea>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitForm()">Send Request →</button>
+      <div class="success-msg" id="success-msg">
+        ✅ Thank you! We will be in touch within 24 hours. In the meantime, try the free teacher dashboard at focusmirror.onrender.com/teacher
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleFaq(el) {
+      el.classList.toggle('open');
+    }
+
+    function submitForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const school = document.getElementById('f-school').value.trim();
+      if (!name || !school) { alert('Please fill in your name and school name'); return; }
+      // Store locally for now
+      const submission = {
+        name: name,
+        role: document.getElementById('f-role').value,
+        school: school,
+        city: document.getElementById('f-city').value,
+        students: document.getElementById('f-students').value,
+        message: document.getElementById('f-msg').value,
+        timestamp: new Date().toISOString()
+      };
+      const existing = JSON.parse(localStorage.getItem('fm_school_enquiries') || '[]');
+      existing.push(submission);
+      localStorage.setItem('fm_school_enquiries', JSON.stringify(existing));
+      document.getElementById('success-msg').style.display = 'block';
+      document.querySelector('.submit-btn').disabled = true;
+      document.querySelector('.submit-btn').style.opacity = '0.5';
+    }
+  </script>
+</body>
+</html>""")
+f.close()
+print("schools.html written!")
