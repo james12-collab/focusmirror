@@ -11,6 +11,7 @@ from badges import check_badges, get_all_badges
 from pattern_memory import save_session, get_patterns, load_sessions
 from accounts import signup, login
 from exam_readiness import calculate_readiness
+from firebase_db import save_world_point_db, get_world_data_db, save_school_enquiry
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'focusmirror_secret_key_2024'
@@ -44,25 +45,16 @@ class_rooms = {}
 WORLD_FILE = 'world_sessions.json'
 
 def load_world_data():
-    if not os.path.exists(WORLD_FILE):
-        return []
     try:
-        with open(WORLD_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        return get_world_data_db()
     except:
         return []
 
 def save_world_point(lat, lng, score):
-    data = load_world_data()
-    data.append({
-        "lat": round(float(lat), 2),
-        "lng": round(float(lng), 2),
-        "score": int(score),
-        "time": time.strftime("%Y-%m-%dT%H:%M:%S")
-    })
-    data = data[-1000:]
-    with open(WORLD_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f)
+    try:
+        save_world_point_db(lat, lng, score)
+    except Exception as e:
+        print(f"World save error: {e}")
 
 def tab_loop():
     while True:
@@ -232,6 +224,15 @@ def api_save_location():
     if lat and lng:
         save_world_point(lat, lng, score)
     return jsonify({"status": "saved"})
+
+@app.route('/api/school-enquiry', methods=['POST'])
+def api_school_enquiry():
+    try:
+        d = request.json or {}
+        save_school_enquiry(d)
+        return jsonify({"status": "saved"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/exam-readiness', methods=['POST'])
 def api_exam_readiness():

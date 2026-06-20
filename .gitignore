@@ -1,8 +1,58 @@
-venv/
+# Firebase credentials - NEVER commit this
+firebase_credentials.json
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-.env
-ngrok.exe
-focusmirror_qr.png
+*.pyd
+.Python
+*.pyc
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Data files
+sessions.json
+leaderboard.json
+accounts.json
+world_sessions.json
+
+# Model weights
 static/weights/
+
+# Environment variables
+.env
+.env.local
+
+# Windows
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+pip-log.txt
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# ngrok
+ngrok.exe
+
+# Write scripts (not needed in production)
+write_*.py
+
+# Test files
+test_*.py
+debug.py
