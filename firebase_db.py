@@ -11,7 +11,14 @@ from datetime import datetime, date
 # ─────────────────────────────────────────────────────────
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate('firebase_credentials.json')
+    import os
+    import json
+    firebase_env = os.environ.get('FIREBASE_CREDENTIALS')
+    if firebase_env:
+        cred_dict = json.loads(firebase_env)
+        cred = credentials.Certificate(cred_dict)
+    else:
+        cred = credentials.Certificate('firebase_credentials.json')
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
