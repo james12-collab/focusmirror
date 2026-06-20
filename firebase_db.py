@@ -231,8 +231,24 @@ def save_session_db(username, score, duration_minutes,
     db.collection('users').document(username)\
       .collection('sessions').add(session_data)
 
-    # Also save to global sessions for leaderboard/benchmarking
-    db.collection('all_sessions').add(session_data)
+    # Save anonymized version to global sessions for benchmarking
+    # Username deliberately excluded for privacy
+    anonymized = {
+        'score': int(score),
+        'duration': round(float(duration_minutes), 1),
+        'grade': get_grade(score),
+        'date': time.strftime("%Y-%m-%d"),
+        'time_of_day': get_time_of_day(),
+        'hour': int(time.strftime("%H")),
+        'emotions': {
+            'stress': int(stress),
+            'confusion': int(confusion),
+            'boreout': int(boreout),
+            'engagement': int(engagement)
+        },
+        'created_at': firestore.SERVER_TIMESTAMP
+    }
+    db.collection('all_sessions').add(anonymized)
 
     print(f"Session saved for {username}: score={score}")
     return session_data

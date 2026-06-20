@@ -196,9 +196,9 @@
       if (!parentName) { msg.textContent = 'Please enter your name'; return; }
 
       try {
-        const resp = await fetch('/api/sessions');
+        const resp = await fetch('/api/my-sessions?user=' + encodeURIComponent(username));
         const all = await resp.json();
-        const childSessions = all.filter(s => s.name && s.name.toLowerCase() === username);
+        const childSessions = all;
 
         if (!childSessions.length) {
           msg.textContent = 'No account found for "' + username + '". Check the username and try again.';

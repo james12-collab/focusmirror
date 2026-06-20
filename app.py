@@ -8,13 +8,13 @@ from scorer import FocusScorer
 from tab_monitor import TabMonitor
 from leaderboard import save_score, get_leaderboard, get_rank
 from badges import check_badges, get_all_badges
-from pattern_memory import save_session, get_patterns, load_sessions
+from pattern_memory import save_session, get_user_patterns_for, load_sessions
 from accounts import signup, login
 from exam_readiness import calculate_readiness
 from firebase_db import save_world_point_db, get_world_data_db, save_school_enquiry
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'focusmirror_secret_key_2024'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'focusmirror_dev_key_local')
 app.config['PERMANENT_SESSION_LIFETIME'] = 60 * 60 * 24 * 30
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
@@ -42,6 +42,14 @@ consecutive_blink_seconds = 0
 microsleep_count = 0
 buddy_rooms = {}
 class_rooms = {}
+
+# Leaderboard cache — prevents Firestore quota exhaustion
+# Refreshes every 30 seconds instead of every sensor reading
+_leaderboard_cache = []
+_leaderboard_cache_time = 0
+_rank_cache = {}
+_rank_cache_time = 0
+CACHE_TTL = 30  # seconds
 WORLD_FILE = 'world_sessions.json'
 
 def load_world_data():
@@ -209,7 +217,35 @@ def schools():
 # API ROUTES
 @app.route('/api/sessions')
 def api_sessions():
-    return jsonify(load_sessions())
+    # Returns all sessions - used for global benchmarking only
+    # Usernames are stripped for privacy
+    all_sess = load_sessions()
+    safe = []
+    for s in all_sess:
+        safe.append({
+            'score': s.get('score', 0),
+            'date': s.get('date', ''),
+            'time_of_day': s.get('time_of_day', ''),
+            'grade': s.get('grade', ''),
+            'duration': s.get('duration', 0),
+            'emotions': s.get('emotions', {})
+        })
+    return jsonify(safe)
+
+@app.route('/api/my-sessions')
+def api_my_sessions():
+    # Returns sessions for a specific user only
+    # Requires username parameter
+    username = request.args.get('user', '').strip().lower()
+    if not username:
+        return jsonify([])
+    try:
+        from firebase_db import get_user_sessions
+        sessions = get_user_sessions(username)
+        return jsonify(sessions)
+    except Exception as e:
+        print(f"My sessions error: {e}")
+        return jsonify([])
 
 @app.route('/api/world-data')
 def api_world_data():
@@ -280,36 +316,14 @@ def api_public_stats():
 @app.route('/patterns')
 def patterns():
     username = request.args.get('user', '').strip().lower()
-    all_sessions = load_sessions()
-    if username:
-        filtered = [s for s in all_sessions if s.get('name','').lower() == username]
-    else:
-        filtered = all_sessions
-    from pattern_memory import calc_streak
-    if len(filtered) < 2:
+    if not username:
         return jsonify({})
-    time_scores = {}
-    for s in filtered:
-        tod = s.get('time_of_day', 'Unknown')
-        if tod not in time_scores:
-            time_scores[tod] = []
-        time_scores[tod].append(s['score'])
-    best_time = max(time_scores, key=lambda x: sum(time_scores[x])/len(time_scores[x]))
-    avg_duration = sum(s['duration'] for s in filtered) / len(filtered)
-    recent = filtered[-7:]
-    trend = "improving" if recent[-1]['score'] > recent[0]['score'] else "declining"
-    streak = calc_streak(filtered)
-    time_avgs = {t: round(sum(v)/len(v), 1) for t, v in time_scores.items()}
-    return jsonify({
-        "total_sessions": len(filtered),
-        "best_time": best_time,
-        "avg_duration": round(avg_duration, 1),
-        "trend": trend,
-        "recent_scores": [s['score'] for s in recent],
-        "avg_score": round(sum(s['score'] for s in filtered) / len(filtered), 1),
-        "streak": streak,
-        "time_avgs": time_avgs
-    })
+    try:
+        data = get_user_patterns_for(username)
+        return jsonify(data or {})
+    except Exception as e:
+        print(f"Patterns error: {e}")
+        return jsonify({})
 
 @app.route('/reset', methods=['POST'])
 def reset():
@@ -379,7 +393,18 @@ def sensor():
                 heatmap_data.pop(0)
             last_heatmap = time.time()
         rec = burnout or scorer.get_recommendation(score, switches, tab_monitor.is_distracted)
-        rank = get_rank(score)
+        # Use cached rank to avoid Firestore reads every 2 seconds
+        global _rank_cache, _rank_cache_time, _leaderboard_cache, _leaderboard_cache_time
+        now_ts = time.time()
+        if now_ts - _leaderboard_cache_time > CACHE_TTL:
+            _leaderboard_cache = get_leaderboard()
+            _leaderboard_cache_time = now_ts
+        # Calculate rank from cache
+        rank = len(_leaderboard_cache) + 1
+        for i, entry in enumerate(_leaderboard_cache):
+            if entry.get('score', 0) <= score:
+                rank = i + 1
+                break
         new_badges, updated_badges = check_badges(
             score=score, posture=posture, bpm=bpm,
             session_minutes=scorer.session_minutes(), rank=rank,
@@ -401,7 +426,7 @@ def sensor():
             "stress":stress,"confusion":confusion,
             "boreout":boreout,"engagement":engagement,
             "microsleep":microsleep,"microsleep_count":microsleep_count,
-            "leaderboard":get_leaderboard(),"rank":rank,
+            "leaderboard":_leaderboard_cache,"rank":rank,
             "best_score":session_best_score,"current_name":current_name,
             "badges":updated_badges,"new_badge":new_badge,
             "all_badges":get_all_badges()

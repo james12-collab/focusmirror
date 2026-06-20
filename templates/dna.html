@@ -186,7 +186,7 @@
       } catch(e) {
         myName = localStorage.getItem('fm_username') || '';
       }
-      const resp = await fetch('/api/sessions');
+      const resp = await fetch('/api/my-sessions?user=' + encodeURIComponent(myName));
       let sessions = await resp.json();
 
       // Filter by name
