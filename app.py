@@ -43,26 +43,10 @@ microsleep_count = 0
 buddy_rooms = {}
 class_rooms = {}
 
-# Leaderboard cache — prevents Firestore quota exhaustion
-# Refreshes every 30 seconds instead of every sensor reading
+# FIX 2: Leaderboard cache — prevents Firestore quota exhaustion
 _leaderboard_cache = []
 _leaderboard_cache_time = 0
-_rank_cache = {}
-_rank_cache_time = 0
-CACHE_TTL = 30  # seconds
-WORLD_FILE = 'world_sessions.json'
-
-def load_world_data():
-    try:
-        return get_world_data_db()
-    except:
-        return []
-
-def save_world_point(lat, lng, score):
-    try:
-        save_world_point_db(lat, lng, score)
-    except Exception as e:
-        print(f"World save error: {e}")
+CACHE_TTL = 30  # seconds — refresh every 30s not every 2s
 
 def tab_loop():
     while True:
@@ -80,7 +64,7 @@ def tab_loop():
 threading.Thread(target=tab_loop, daemon=True).start()
 print("Server ready!")
 
-# ACCOUNT ROUTES
+# ── ACCOUNT ROUTES ──────────────────────────────────────────
 @app.route('/login-page')
 def login_page():
     return render_template('login.html')
@@ -117,10 +101,14 @@ def api_logout():
 @app.route('/api/me')
 def api_me():
     if 'username' in session:
-        return jsonify({"logged_in": True, "username": session['username'], "display_name": session['display_name']})
+        return jsonify({
+            "logged_in": True,
+            "username": session['username'],
+            "display_name": session['display_name']
+        })
     return jsonify({"logged_in": False})
 
-# SOCKET EVENTS
+# ── SOCKET EVENTS ───────────────────────────────────────────
 @socketio.on('join_buddy')
 def handle_join_buddy(data):
     room_code = str(data.get('room_code','')).upper().strip()
@@ -139,7 +127,12 @@ def handle_buddy_score(data):
     if room_code and name:
         if room_code not in buddy_rooms:
             buddy_rooms[room_code] = {}
-        buddy_rooms[room_code][name] = {'score':data.get('score',0),'posture':data.get('posture',100),'stress':data.get('stress',0),'name':name}
+        buddy_rooms[room_code][name] = {
+            'score': data.get('score',0),
+            'posture': data.get('posture',100),
+            'stress': data.get('stress',0),
+            'name': name
+        }
         emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
 
 @socketio.on('join_class')
@@ -152,7 +145,10 @@ def handle_join_class(data):
     if class_code not in class_rooms:
         class_rooms[class_code] = {}
     if role == 'student':
-        class_rooms[class_code][name] = {'score':0,'posture':100,'stress':0,'name':name,'state':'STARTING','burnout_mins':None}
+        class_rooms[class_code][name] = {
+            'score':0,'posture':100,'stress':0,
+            'name':name,'state':'STARTING','burnout_mins':None
+        }
     emit('class_update', class_rooms.get(class_code,{}), room='class_' + class_code)
 
 @socketio.on('class_score')
@@ -162,10 +158,17 @@ def handle_class_score(data):
     if class_code and name:
         if class_code not in class_rooms:
             class_rooms[class_code] = {}
-        class_rooms[class_code][name] = {'score':data.get('score',0),'posture':data.get('posture',100),'stress':data.get('stress',0),'name':name,'state':data.get('state','TRACKING'),'burnout_mins':data.get('burnout_mins')}
+        class_rooms[class_code][name] = {
+            'score': data.get('score',0),
+            'posture': data.get('posture',100),
+            'stress': data.get('stress',0),
+            'name': name,
+            'state': data.get('state','TRACKING'),
+            'burnout_mins': data.get('burnout_mins')
+        }
         emit('class_update', class_rooms[class_code], room='class_' + class_code)
 
-# MAIN ROUTES
+# ── MAIN ROUTES ─────────────────────────────────────────────
 @app.route('/')
 def landing():
     return render_template('landing.html')
@@ -214,11 +217,10 @@ def parent():
 def schools():
     return render_template('schools.html')
 
-# API ROUTES
+# ── API ROUTES ──────────────────────────────────────────────
 @app.route('/api/sessions')
 def api_sessions():
-    # Returns all sessions - used for global benchmarking only
-    # Usernames are stripped for privacy
+    # FIX 3: Returns anonymized sessions only — no usernames
     all_sess = load_sessions()
     safe = []
     for s in all_sess:
@@ -234,8 +236,7 @@ def api_sessions():
 
 @app.route('/api/my-sessions')
 def api_my_sessions():
-    # Returns sessions for a specific user only
-    # Requires username parameter
+    # FIX 3: Private endpoint — returns only this user's sessions
     username = request.args.get('user', '').strip().lower()
     if not username:
         return jsonify([])
@@ -249,7 +250,11 @@ def api_my_sessions():
 
 @app.route('/api/world-data')
 def api_world_data():
-    return jsonify(load_world_data())
+    try:
+        return jsonify(get_world_data_db())
+    except Exception as e:
+        print(f"World data error: {e}")
+        return jsonify([])
 
 @app.route('/api/save-location', methods=['POST'])
 def api_save_location():
@@ -258,7 +263,10 @@ def api_save_location():
     lng = d.get('lng')
     score = d.get('score', 0)
     if lat and lng:
-        save_world_point(lat, lng, score)
+        try:
+            save_world_point_db(lat, lng, score)
+        except Exception as e:
+            print(f"Location save error: {e}")
     return jsonify({"status": "saved"})
 
 @app.route('/api/school-enquiry', methods=['POST'])
@@ -275,11 +283,11 @@ def api_exam_readiness():
     d = request.json or {}
     exam_date = d.get('exam_date', '')
     username = d.get('username', '').strip().lower()
-    all_sess = load_sessions()
-    if username:
-        user_sess = [s for s in all_sess if s.get('name','').lower() == username]
-    else:
-        user_sess = all_sess
+    try:
+        from firebase_db import get_user_sessions
+        user_sess = get_user_sessions(username) if username else []
+    except:
+        user_sess = []
     return jsonify(calculate_readiness(user_sess, exam_date))
 
 @app.route('/api/benchmarks')
@@ -288,15 +296,15 @@ def api_benchmarks():
     all_sess = load_sessions()
     if not all_sess:
         return jsonify({"percentile": 50, "total": 0, "avg": 0})
-    scores = sorted([s['score'] for s in all_sess])
+    scores = sorted([s['score'] for s in all_sess if 'score' in s])
     below = sum(1 for s in scores if s < score)
-    percentile = int(below / len(scores) * 100)
+    percentile = int(below / len(scores) * 100) if scores else 50
     return jsonify({
         "percentile": percentile,
         "top_percent": 100 - percentile,
         "total": len(scores),
-        "avg": round(sum(scores)/len(scores), 1),
-        "top_score": max(scores)
+        "avg": round(sum(scores)/len(scores), 1) if scores else 0,
+        "top_score": max(scores) if scores else 0
     })
 
 @app.route('/api/public/stats')
@@ -304,15 +312,16 @@ def api_public_stats():
     all_sess = load_sessions()
     if not all_sess:
         return jsonify({"total_sessions": 0, "avg_score": 0, "top_score": 0, "total_users": 0})
-    scores = [s['score'] for s in all_sess]
+    scores = [s['score'] for s in all_sess if 'score' in s]
     return jsonify({
         "total_sessions": len(all_sess),
-        "avg_score": round(sum(scores)/len(scores), 1),
-        "top_score": max(scores),
-        "total_users": len(set(s.get('name','') for s in all_sess)),
+        "avg_score": round(sum(scores)/len(scores), 1) if scores else 0,
+        "top_score": max(scores) if scores else 0,
+        "total_users": "private",
         "endpoint": "focusmirror.onrender.com/api/public/stats"
     })
 
+# FIX 4: Updated patterns route using isolated user patterns
 @app.route('/patterns')
 def patterns():
     username = request.args.get('user', '').strip().lower()
@@ -352,15 +361,16 @@ def reset():
         "session_minutes":0,"switches":0,"burnout_mins":None,
         "stress":0,"confusion":0,"boreout":0,"engagement":0,
         "microsleep":False,"microsleep_count":0,
-        "heatmap":[],"leaderboard":get_leaderboard(),
+        "heatmap":[],"leaderboard":_leaderboard_cache,
         "badges":[],"new_badge":None,"all_badges":get_all_badges()
     })
-    return jsonify({"status":"reset","leaderboard":get_leaderboard()})
+    return jsonify({"status":"reset","leaderboard":_leaderboard_cache})
 
 @app.route('/sensor', methods=['POST'])
 def sensor():
     global last_heatmap, heatmap_data, session_best_score, microsleep_count
     global consecutive_good_seconds, consecutive_posture_seconds, consecutive_blink_seconds
+    global _leaderboard_cache, _leaderboard_cache_time
     try:
         d = request.json
         bpm = d.get('bpm',0)
@@ -393,18 +403,18 @@ def sensor():
                 heatmap_data.pop(0)
             last_heatmap = time.time()
         rec = burnout or scorer.get_recommendation(score, switches, tab_monitor.is_distracted)
-        # Use cached rank to avoid Firestore reads every 2 seconds
-        global _rank_cache, _rank_cache_time, _leaderboard_cache, _leaderboard_cache_time
+
+        # FIX 2: Cached rank — read Firestore max once per 30 seconds
         now_ts = time.time()
         if now_ts - _leaderboard_cache_time > CACHE_TTL:
             _leaderboard_cache = get_leaderboard()
             _leaderboard_cache_time = now_ts
-        # Calculate rank from cache
         rank = len(_leaderboard_cache) + 1
         for i, entry in enumerate(_leaderboard_cache):
             if entry.get('score', 0) <= score:
                 rank = i + 1
                 break
+
         new_badges, updated_badges = check_badges(
             score=score, posture=posture, bpm=bpm,
             session_minutes=scorer.session_minutes(), rank=rank,
@@ -442,8 +452,11 @@ def leaderboard():
 
 @app.route('/reset-leaderboard', methods=['POST'])
 def reset_leaderboard_route():
+    global _leaderboard_cache, _leaderboard_cache_time
     from leaderboard import reset_leaderboard
     reset_leaderboard()
+    _leaderboard_cache = []
+    _leaderboard_cache_time = 0
     return jsonify({"status":"reset","leaderboard":[]})
 
 @app.route('/data')
@@ -455,6 +468,6 @@ def data():
     return Response(generate(), mimetype='text/event-stream')
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT',5000))
+    port = int(os.environ.get('PORT', 5000))
     print("FocusMirror running at http://127.0.0.1:5000")
     socketio.run(app, debug=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)

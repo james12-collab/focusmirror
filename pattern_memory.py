@@ -9,7 +9,6 @@ import time
 
 def save_session(name, score, duration_minutes,
                  stress=0, confusion=0, boreout=0, engagement=50):
-    """Save session to Firebase under user's private subcollection"""
     username = name.strip().lower()
     save_session_db(
         username, score, duration_minutes,
@@ -17,19 +16,18 @@ def save_session(name, score, duration_minutes,
     )
 
 def load_sessions():
-    """Load all sessions - anonymized for global benchmarking"""
+    """Returns anonymized global sessions for benchmarking"""
     return get_all_sessions()
 
 def get_patterns():
-    """Legacy function - returns None. Use get_user_patterns_for(username) instead."""
+    """Deprecated — use get_user_patterns_for(username)"""
     return None
 
 def get_user_patterns_for(username):
     """
-    Get study patterns for a specific user.
-    Properly isolated - only returns this user's data.
+    Returns study patterns for a specific user only.
+    Complete data isolation guaranteed.
     """
     if not username:
         return {}
-    username = username.strip().lower()
-    return get_user_patterns(username)
+    return get_user_patterns(username.strip().lower())
