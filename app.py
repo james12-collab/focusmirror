@@ -467,6 +467,26 @@ def data():
             time.sleep(1)
     return Response(generate(), mimetype='text/event-stream')
 
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/cookies')
+def cookies_page():
+    return render_template('cookies.html')
+
+@app.route('/aup')
+def aup():
+    return render_template('aup.html')
+
+@app.route('/data-retention')
+def data_retention():
+    return render_template('data-retention.html')
+
+@app.route('/parental-consent')
+def parental_consent():
+    return render_template('parental-consent.html')
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print("FocusMirror running at http://127.0.0.1:5000")
