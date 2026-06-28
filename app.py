@@ -112,28 +112,39 @@ def api_me():
 @socketio.on('join_buddy')
 def handle_join_buddy(data):
     room_code = str(data.get('room_code','')).upper().strip()
-    name = data.get('name','Anonymous')
-    if not room_code: return
+    name = str(data.get('name','Anonymous')).strip()[:30]
+    if not room_code or not name: return
     join_room('buddy_' + room_code)
     if room_code not in buddy_rooms:
         buddy_rooms[room_code] = {}
-    buddy_rooms[room_code][name] = {'score':0,'posture':100,'stress':0,'name':name}
+    # Preserve existing score if reconnecting
+    existing = buddy_rooms[room_code].get(name, {})
+    buddy_rooms[room_code][name] = {
+        'score':   existing.get('score', None),
+        'posture': existing.get('posture', 100),
+        'stress':  existing.get('stress', 0),
+        'name':    name
+    }
+    # Broadcast to ALL in room so both sides update
     emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
+    print(f"Buddy join: {name} in room {room_code} — members: {list(buddy_rooms[room_code].keys())}")
 
 @socketio.on('buddy_score')
 def handle_buddy_score(data):
     room_code = str(data.get('room_code','')).upper().strip()
-    name = data.get('name','Anonymous')
-    if room_code and name:
-        if room_code not in buddy_rooms:
-            buddy_rooms[room_code] = {}
-        buddy_rooms[room_code][name] = {
-            'score': data.get('score',0),
-            'posture': data.get('posture',100),
-            'stress': data.get('stress',0),
-            'name': name
-        }
-        emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
+    name = str(data.get('name','Anonymous')).strip()[:30]
+    if not room_code or not name: return
+    if room_code not in buddy_rooms:
+        buddy_rooms[room_code] = {}
+    buddy_rooms[room_code][name] = {
+        'score':   data.get('score', 0),
+        'posture': data.get('posture', 100),
+        'stress':  data.get('stress', 0),
+        'state':   data.get('state', 'TRACKING'),
+        'name':    name
+    }
+    # Broadcast to ALL in room including sender
+    emit('buddy_update', buddy_rooms[room_code], room='buddy_' + room_code)
 
 @socketio.on('join_class')
 def handle_join_class(data):

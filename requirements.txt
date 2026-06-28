@@ -6,3 +6,4 @@ pillow
 qrcode
 flask-socketio
 firebase-admin
+Flask-Cors

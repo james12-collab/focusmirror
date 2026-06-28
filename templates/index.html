@@ -340,6 +340,70 @@
     .freeze-popup-title { font-size:14px; font-weight:700; color:#4A9EEF; margin-bottom:6px; }
     .freeze-popup-desc { font-size:11px; color:#666; line-height:1.6; }
 
+  
+    /* ── BUDDY MODE PANEL ─────────────────────────── */
+    .buddy-fab{position:fixed;bottom:80px;right:16px;width:52px;height:52px;background:#1D9E75;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:900;box-shadow:0 4px 16px rgba(29,158,117,.4);border:none;transition:transform .2s;}
+    .buddy-fab:hover{transform:scale(1.1);}
+    .buddy-fab.active{background:#4A9EEF;animation:buddy-pulse 2s infinite;}
+    @keyframes buddy-pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,239,.5)}50%{box-shadow:0 0 0 10px rgba(74,158,239,0)}}
+    .buddy-panel{position:fixed;bottom:0;left:0;right:0;background:#0e0e0e;border-top:2px solid #1D9E75;z-index:950;transform:translateY(100%);transition:transform .3s ease;max-height:85vh;overflow-y:auto;}
+    .buddy-panel.open{transform:translateY(0);}
+    .buddy-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1a1a1a;position:sticky;top:0;background:#0e0e0e;}
+    .buddy-header-title{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+    .buddy-live-dot{width:8px;height:8px;border-radius:50%;background:#1D9E75;animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .buddy-close{background:none;border:none;color:#666;font-size:20px;cursor:pointer;padding:4px 8px;}
+    .buddy-body{padding:16px;}
+    /* Setup screens */
+    .buddy-setup{text-align:center;}
+    .buddy-icon{font-size:48px;margin-bottom:12px;}
+    .buddy-setup h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+    .buddy-setup p{font-size:13px;color:#555;margin-bottom:20px;line-height:1.6;}
+    .buddy-tabs{display:flex;gap:8px;margin-bottom:16px;}
+    .buddy-tab{flex:1;padding:9px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;color:#666;text-align:center;}
+    .buddy-tab.active{background:#0d2e1f;border-color:#1D9E75;color:#1D9E75;}
+    .buddy-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:11px 14px;color:#fff;font-size:16px;font-weight:700;text-align:center;letter-spacing:3px;outline:none;margin-bottom:10px;}
+    .buddy-input:focus{border-color:#1D9E75;}
+    .buddy-input.name-input{letter-spacing:0;font-size:14px;font-weight:400;text-align:left;}
+    .buddy-btn{width:100%;padding:12px;background:#1D9E75;color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+    .buddy-btn-sec{width:100%;padding:11px;background:#1a1a1a;color:#888;border:1px solid #2a2a2a;border-radius:10px;font-size:13px;cursor:pointer;}
+    /* Live view */
+    .buddy-live{display:none;}
+    .buddy-live.show{display:block;}
+    .buddy-room-tag{font-size:10px;color:#555;text-align:center;margin-bottom:16px;letter-spacing:1px;}
+    .buddy-room-code{color:#1D9E75;font-weight:700;letter-spacing:3px;}
+    .buddy-scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+    .buddy-score-card{background:#111;border:1px solid #1a1a1a;border-radius:14px;padding:16px 12px;text-align:center;}
+    .buddy-score-card.you{border-color:#1D9E75;}
+    .buddy-score-card.them{border-color:#4A9EEF;}
+    .bs-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+    .you .bs-label{color:#1D9E75;}
+    .them .bs-label{color:#4A9EEF;}
+    .bs-avatar{font-size:22px;font-weight:800;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+    .you .bs-avatar{background:#0d2e1f;color:#1D9E75;}
+    .them .bs-avatar{background:#0a1a2e;color:#4A9EEF;}
+    .bs-score{font-size:36px;font-weight:900;margin-bottom:4px;}
+    .you .bs-score{color:#1D9E75;}
+    .them .bs-score{color:#4A9EEF;}
+    .bs-name{font-size:11px;font-weight:600;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bs-state{font-size:10px;color:#555;margin-bottom:4px;}
+    .bs-posture{font-size:9px;color:#444;}
+    .bs-waiting{font-size:12px;color:#333;padding:10px 0;}
+    .buddy-alert{background:#2e0d0d;border:1px solid #E24B4A;border-radius:10px;padding:12px;font-size:13px;color:#E24B4A;text-align:center;margin-bottom:12px;display:none;}
+    .buddy-alert.show{display:block;animation:alertPop .3s ease;}
+    @keyframes alertPop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+    .buddy-insight{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px;font-size:12px;color:#888;line-height:1.6;margin-bottom:12px;}
+    .buddy-disconnect-btn{width:100%;padding:10px;background:transparent;color:#E24B4A;border:1px solid #E24B4A;border-radius:10px;font-size:12px;cursor:pointer;}
+    .buddy-msg{font-size:12px;text-align:center;padding:8px;border-radius:8px;margin-top:8px;min-height:14px;}
+    .buddy-msg.ok{background:#0d2e1f;color:#1D9E75;}
+    .buddy-msg.err{background:#2e0d0d;color:#E24B4A;}
+    /* Waiting indicator */
+    .buddy-waiting{text-align:center;padding:20px 0;}
+    .buddy-waiting p{font-size:13px;color:#555;margin-top:8px;}
+    .buddy-waiting .code-big{font-size:28px;font-weight:900;color:#1D9E75;letter-spacing:6px;background:#0d2e1f;padding:14px 20px;border-radius:12px;border:1px solid #1D9E75;margin:12px 0;}
+    .buddy-waiting .code-hint{font-size:11px;color:#444;margin-top:8px;}
+    .share-code-btn{background:#25D366;color:#000;border:none;border-radius:10px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+
   </style>
 </head>
 <body>
@@ -443,7 +507,7 @@
     <a href="/" class="quick-nav-btn">🏠 Home</a>
     <a href="/stats" class="quick-nav-btn">📊 Stats</a>
     <a href="/dna" class="quick-nav-btn">🧬 DNA</a>
-    <a href="/buddy" class="quick-nav-btn">🤝 Buddy</a>
+    <a href="#" onclick="toggleBuddyPanel();return false;" class="quick-nav-btn">🤝 Buddy</a>
     <a href="/teacher" class="quick-nav-btn">🏫 Teacher</a>
     <a href="/parent" class="quick-nav-btn">👨‍👩‍👧 Parent</a>
     <a href="/wrapped" class="quick-nav-btn">🎁 Wrapped</a>
@@ -889,6 +953,8 @@
       lastScoreAlert = d.score;
       adaptPomodoro(d.score);
       updateMascot(d.score, d.burnout_mins, d.microsleep, d.new_badge);
+      // Send score to buddy room if active
+      sendBuddyScore(d.score, d.posture, d.stress, d.state);
       updateBenchmark(d.score);
       emitScores(d.score, d.posture, d.stress, d.state, d.burnout_mins);
       const box=document.getElementById('alert-box');
@@ -1207,6 +1273,70 @@
     .freeze-popup-title { font-size:14px; font-weight:700; color:#4A9EEF; margin-bottom:6px; }
     .freeze-popup-desc { font-size:11px; color:#666; line-height:1.6; }
 
+  
+    /* ── BUDDY MODE PANEL ─────────────────────────── */
+    .buddy-fab{position:fixed;bottom:80px;right:16px;width:52px;height:52px;background:#1D9E75;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:900;box-shadow:0 4px 16px rgba(29,158,117,.4);border:none;transition:transform .2s;}
+    .buddy-fab:hover{transform:scale(1.1);}
+    .buddy-fab.active{background:#4A9EEF;animation:buddy-pulse 2s infinite;}
+    @keyframes buddy-pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,239,.5)}50%{box-shadow:0 0 0 10px rgba(74,158,239,0)}}
+    .buddy-panel{position:fixed;bottom:0;left:0;right:0;background:#0e0e0e;border-top:2px solid #1D9E75;z-index:950;transform:translateY(100%);transition:transform .3s ease;max-height:85vh;overflow-y:auto;}
+    .buddy-panel.open{transform:translateY(0);}
+    .buddy-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1a1a1a;position:sticky;top:0;background:#0e0e0e;}
+    .buddy-header-title{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+    .buddy-live-dot{width:8px;height:8px;border-radius:50%;background:#1D9E75;animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .buddy-close{background:none;border:none;color:#666;font-size:20px;cursor:pointer;padding:4px 8px;}
+    .buddy-body{padding:16px;}
+    /* Setup screens */
+    .buddy-setup{text-align:center;}
+    .buddy-icon{font-size:48px;margin-bottom:12px;}
+    .buddy-setup h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+    .buddy-setup p{font-size:13px;color:#555;margin-bottom:20px;line-height:1.6;}
+    .buddy-tabs{display:flex;gap:8px;margin-bottom:16px;}
+    .buddy-tab{flex:1;padding:9px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;color:#666;text-align:center;}
+    .buddy-tab.active{background:#0d2e1f;border-color:#1D9E75;color:#1D9E75;}
+    .buddy-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:11px 14px;color:#fff;font-size:16px;font-weight:700;text-align:center;letter-spacing:3px;outline:none;margin-bottom:10px;}
+    .buddy-input:focus{border-color:#1D9E75;}
+    .buddy-input.name-input{letter-spacing:0;font-size:14px;font-weight:400;text-align:left;}
+    .buddy-btn{width:100%;padding:12px;background:#1D9E75;color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+    .buddy-btn-sec{width:100%;padding:11px;background:#1a1a1a;color:#888;border:1px solid #2a2a2a;border-radius:10px;font-size:13px;cursor:pointer;}
+    /* Live view */
+    .buddy-live{display:none;}
+    .buddy-live.show{display:block;}
+    .buddy-room-tag{font-size:10px;color:#555;text-align:center;margin-bottom:16px;letter-spacing:1px;}
+    .buddy-room-code{color:#1D9E75;font-weight:700;letter-spacing:3px;}
+    .buddy-scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+    .buddy-score-card{background:#111;border:1px solid #1a1a1a;border-radius:14px;padding:16px 12px;text-align:center;}
+    .buddy-score-card.you{border-color:#1D9E75;}
+    .buddy-score-card.them{border-color:#4A9EEF;}
+    .bs-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+    .you .bs-label{color:#1D9E75;}
+    .them .bs-label{color:#4A9EEF;}
+    .bs-avatar{font-size:22px;font-weight:800;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+    .you .bs-avatar{background:#0d2e1f;color:#1D9E75;}
+    .them .bs-avatar{background:#0a1a2e;color:#4A9EEF;}
+    .bs-score{font-size:36px;font-weight:900;margin-bottom:4px;}
+    .you .bs-score{color:#1D9E75;}
+    .them .bs-score{color:#4A9EEF;}
+    .bs-name{font-size:11px;font-weight:600;color:#fff;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bs-state{font-size:10px;color:#555;margin-bottom:4px;}
+    .bs-posture{font-size:9px;color:#444;}
+    .bs-waiting{font-size:12px;color:#333;padding:10px 0;}
+    .buddy-alert{background:#2e0d0d;border:1px solid #E24B4A;border-radius:10px;padding:12px;font-size:13px;color:#E24B4A;text-align:center;margin-bottom:12px;display:none;}
+    .buddy-alert.show{display:block;animation:alertPop .3s ease;}
+    @keyframes alertPop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+    .buddy-insight{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px;font-size:12px;color:#888;line-height:1.6;margin-bottom:12px;}
+    .buddy-disconnect-btn{width:100%;padding:10px;background:transparent;color:#E24B4A;border:1px solid #E24B4A;border-radius:10px;font-size:12px;cursor:pointer;}
+    .buddy-msg{font-size:12px;text-align:center;padding:8px;border-radius:8px;margin-top:8px;min-height:14px;}
+    .buddy-msg.ok{background:#0d2e1f;color:#1D9E75;}
+    .buddy-msg.err{background:#2e0d0d;color:#E24B4A;}
+    /* Waiting indicator */
+    .buddy-waiting{text-align:center;padding:20px 0;}
+    .buddy-waiting p{font-size:13px;color:#555;margin-top:8px;}
+    .buddy-waiting .code-big{font-size:28px;font-weight:900;color:#1D9E75;letter-spacing:6px;background:#0d2e1f;padding:14px 20px;border-radius:12px;border:1px solid #1D9E75;margin:12px 0;}
+    .buddy-waiting .code-hint{font-size:11px;color:#444;margin-top:8px;}
+    .share-code-btn{background:#25D366;color:#000;border:none;border-radius:10px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+
   </style>
 </head>
 <body>
@@ -1246,6 +1376,94 @@
     <a href="/privacy" style="color:#1D9E75;text-decoration:none;">Privacy Policy</a> ·
     <a href="/app" style="color:#333;text-decoration:none;">focusmirror.onrender.com</a>
   </div>
+
+  <!-- BUDDY MODE FAB -->
+  <button class="buddy-fab" id="buddy-fab" onclick="toggleBuddyPanel()" title="Study Buddy Mode">🤝</button>
+
+  <!-- BUDDY PANEL -->
+  <div class="buddy-panel" id="buddy-panel">
+    <div class="buddy-header">
+      <div class="buddy-header-title">
+        🤝 Study Buddy Mode
+        <span class="buddy-live-dot" id="buddy-dot" style="display:none"></span>
+      </div>
+      <button class="buddy-close" onclick="toggleBuddyPanel()">✕</button>
+    </div>
+
+    <div class="buddy-body">
+
+      <!-- ALERT FOR WHEN BUDDY LOSES FOCUS -->
+      <div class="buddy-alert" id="buddy-alert"></div>
+
+      <!-- SETUP SCREEN -->
+      <div class="buddy-setup" id="buddy-setup">
+        <div class="buddy-icon">🤝</div>
+        <h3>Study Together</h3>
+        <p>Both of you keep FocusMirror open on your own phones. Create or join a room — and you will see each other's live focus score as you study.</p>
+        <div class="buddy-tabs">
+          <div class="buddy-tab active" id="btab-create" onclick="switchBuddyTab('create')">Create Room</div>
+          <div class="buddy-tab" id="btab-join" onclick="switchBuddyTab('join')">Join Room</div>
+        </div>
+
+        <!-- CREATE -->
+        <div id="buddy-create-panel">
+          <input class="buddy-input name-input" id="buddy-my-name-create" placeholder="Your name..." maxlength="20">
+          <button class="buddy-btn" onclick="createBuddyRoom()">Create Room →</button>
+        </div>
+
+        <!-- JOIN -->
+        <div id="buddy-join-panel" style="display:none">
+          <input class="buddy-input name-input" id="buddy-my-name-join" placeholder="Your name..." maxlength="20">
+          <input class="buddy-input" id="buddy-code-input" placeholder="ROOM CODE" maxlength="6" oninput="this.value=this.value.toUpperCase()">
+          <button class="buddy-btn" onclick="joinBuddyRoom()">Join Room →</button>
+        </div>
+
+        <div class="buddy-msg" id="buddy-setup-msg"></div>
+      </div>
+
+      <!-- WAITING FOR BUDDY (creator waiting) -->
+      <div id="buddy-waiting" style="display:none">
+        <div class="buddy-waiting">
+          <p>Share this code with your friend!</p>
+          <div class="code-big" id="buddy-room-code-display">------</div>
+          <div class="code-hint">Your friend opens FocusMirror → Study Buddy → Join Room → enters this code</div>
+          <button class="share-code-btn" onclick="shareBuddyCode()">📱 Share via WhatsApp</button>
+          <div style="margin-top:14px;font-size:12px;color:#555;">Waiting for your friend to join...</div>
+          <div style="margin-top:6px;font-size:11px;color:#333;">Keep this panel open. Your focus is being tracked.</div>
+        </div>
+        <button class="buddy-disconnect-btn" style="margin-top:12px;" onclick="leaveBuddyRoom()">Leave Room</button>
+      </div>
+
+      <!-- LIVE BUDDY VIEW -->
+      <div class="buddy-live" id="buddy-live">
+        <div class="buddy-room-tag">ROOM <span class="buddy-room-code" id="buddy-live-code"></span></div>
+        <div class="buddy-scores">
+          <!-- YOU -->
+          <div class="buddy-score-card you">
+            <div class="bs-label">You</div>
+            <div class="bs-avatar" id="you-avatar">?</div>
+            <div class="bs-name" id="you-name">You</div>
+            <div class="bs-score" id="you-score">--</div>
+            <div class="bs-state" id="you-state">Starting...</div>
+            <div class="bs-posture" id="you-posture">Posture: --</div>
+          </div>
+          <!-- BUDDY -->
+          <div class="buddy-score-card them">
+            <div class="bs-label">Buddy</div>
+            <div class="bs-avatar" id="them-avatar">?</div>
+            <div class="bs-name" id="them-name">Waiting...</div>
+            <div class="bs-score" id="them-score">--</div>
+            <div class="bs-state" id="them-state">Not connected</div>
+            <div class="bs-posture" id="them-posture">Posture: --</div>
+          </div>
+        </div>
+        <div class="buddy-insight" id="buddy-insight">Both scores will appear here as you study together.</div>
+        <button class="buddy-disconnect-btn" onclick="leaveBuddyRoom()">Leave Room</button>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>`;
 
@@ -1931,6 +2149,231 @@
 
 
 
+
+    // ═══════════════════════════════════════════════════
+    // STUDY BUDDY MODE — fully integrated in main app
+    // ═══════════════════════════════════════════════════
+    let buddyRoomCode  = null;
+    let buddyMyName    = 'Me';
+    let buddyConnected = false;
+    let buddyThemName  = null;
+    let buddyPanelOpen = false;
+    let lastAlertTime  = 0;
+
+    function toggleBuddyPanel() {
+      const panel = document.getElementById('buddy-panel');
+      buddyPanelOpen = !buddyPanelOpen;
+      panel.classList.toggle('open', buddyPanelOpen);
+      document.getElementById('buddy-fab').classList.toggle('active', buddyConnected);
+    }
+
+    function switchBuddyTab(tab) {
+      document.getElementById('buddy-create-panel').style.display = tab === 'create' ? 'block' : 'none';
+      document.getElementById('buddy-join-panel').style.display   = tab === 'join'   ? 'block' : 'none';
+      document.getElementById('btab-create').className = 'buddy-tab' + (tab === 'create' ? ' active' : '');
+      document.getElementById('btab-join').className   = 'buddy-tab' + (tab === 'join'   ? ' active' : '');
+    }
+
+    function generateRoomCode() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    function createBuddyRoom() {
+      const name = document.getElementById('buddy-my-name-create').value.trim()
+                || document.getElementById('name-input')?.value?.trim()
+                || localStorage.getItem('fm_username')
+                || 'Student';
+      buddyMyName   = name;
+      buddyRoomCode = generateRoomCode();
+
+      // Set up my side immediately
+      document.getElementById('you-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('you-name').textContent   = name;
+      document.getElementById('you-score').textContent  = '--';
+
+      // Join SocketIO room
+      socket.emit('join_buddy', { room_code: buddyRoomCode, name: buddyMyName });
+
+      // Show waiting screen
+      document.getElementById('buddy-setup').style.display   = 'none';
+      document.getElementById('buddy-waiting').style.display = 'block';
+      document.getElementById('buddy-live').classList.remove('show');
+      document.getElementById('buddy-room-code-display').textContent = buddyRoomCode;
+      document.getElementById('buddy-dot').style.display = 'inline-block';
+
+      localStorage.setItem('fm_buddy_room', buddyRoomCode);
+      localStorage.setItem('fm_buddy_name', buddyMyName);
+      buddyConnected = true;
+      document.getElementById('buddy-fab').classList.add('active');
+    }
+
+    function joinBuddyRoom() {
+      const name = document.getElementById('buddy-my-name-join').value.trim()
+                || document.getElementById('name-input')?.value?.trim()
+                || localStorage.getItem('fm_username')
+                || 'Student';
+      const code = document.getElementById('buddy-code-input').value.trim().toUpperCase();
+      const msg  = document.getElementById('buddy-setup-msg');
+
+      if (!code || code.length < 4) {
+        showBuddyMsg(msg, 'Enter a valid room code', false); return;
+      }
+
+      buddyMyName   = name;
+      buddyRoomCode = code;
+
+      document.getElementById('you-avatar').textContent = name[0].toUpperCase();
+      document.getElementById('you-name').textContent   = name;
+      document.getElementById('you-score').textContent  = '--';
+
+      socket.emit('join_buddy', { room_code: buddyRoomCode, name: buddyMyName });
+
+      // Go straight to live view
+      document.getElementById('buddy-setup').style.display   = 'none';
+      document.getElementById('buddy-waiting').style.display = 'none';
+      document.getElementById('buddy-live').classList.add('show');
+      document.getElementById('buddy-live-code').textContent = buddyRoomCode;
+      document.getElementById('buddy-dot').style.display     = 'inline-block';
+
+      localStorage.setItem('fm_buddy_room', buddyRoomCode);
+      localStorage.setItem('fm_buddy_name', buddyMyName);
+      buddyConnected = true;
+      document.getElementById('buddy-fab').classList.add('active');
+    }
+
+    function leaveBuddyRoom() {
+      buddyRoomCode  = null;
+      buddyConnected = false;
+      buddyThemName  = null;
+      document.getElementById('buddy-setup').style.display   = 'block';
+      document.getElementById('buddy-waiting').style.display = 'none';
+      document.getElementById('buddy-live').classList.remove('show');
+      document.getElementById('buddy-dot').style.display     = 'none';
+      document.getElementById('buddy-fab').classList.remove('active');
+      localStorage.removeItem('fm_buddy_room');
+      localStorage.removeItem('fm_buddy_name');
+    }
+
+    function shareBuddyCode() {
+      const code = buddyRoomCode || '';
+      const name = buddyMyName || 'A friend';
+      const text = encodeURIComponent(
+        name + ' invited you to a Study Buddy session on FocusMirror!\n\n' +
+        'Room Code: ' + code + '\n\n' +
+        '1. Open focusmirror.onrender.com\n' +
+        '2. Click the 🤝 button (bottom right)\n' +
+        '3. Tap Join Room\n' +
+        '4. Enter code: ' + code + '\n\n' +
+        'You will see each other's live focus scores! Free, no download.'
+      );
+      window.open('https://wa.me/?text=' + text, '_blank');
+    }
+
+    // ── SOCKET LISTENER ─────────────────────────────────────
+    socket.on('buddy_update', function(data) {
+      if (!buddyRoomCode) return;
+
+      // Switch to live view if still on waiting screen
+      if (document.getElementById('buddy-waiting').style.display !== 'none') {
+        document.getElementById('buddy-waiting').style.display = 'none';
+        document.getElementById('buddy-live').classList.add('show');
+        document.getElementById('buddy-live-code').textContent = buddyRoomCode;
+      }
+
+      // Find my entry and their entry
+      const names  = Object.keys(data);
+      const myEntry = data[buddyMyName] || null;
+      const theirEntries = names.filter(n => n !== buddyMyName);
+      const theirName = theirEntries.length > 0 ? theirEntries[0] : null;
+      const theirEntry = theirName ? data[theirName] : null;
+
+      // Update MY card from server echo
+      if (myEntry) {
+        document.getElementById('you-score').textContent = myEntry.score ?? '--';
+        document.getElementById('you-state').textContent = getScoreLabel(myEntry.score);
+        document.getElementById('you-posture').textContent = 'Posture: ' + (myEntry.posture ?? '--');
+      }
+
+      // Update THEIR card
+      if (theirEntry) {
+        buddyThemName = theirName;
+        document.getElementById('them-avatar').textContent = theirName[0].toUpperCase();
+        document.getElementById('them-name').textContent   = theirName;
+        document.getElementById('them-score').textContent  = theirEntry.score ?? '--';
+        document.getElementById('them-state').textContent  = getScoreLabel(theirEntry.score);
+        document.getElementById('them-posture').textContent = 'Posture: ' + (theirEntry.posture ?? '--');
+
+        // Buddy insight
+        const myScore   = parseInt(document.getElementById('you-score').textContent)   || 0;
+        const themScore = parseInt(document.getElementById('them-score').textContent) || 0;
+        let insight = '';
+        if (myScore > themScore + 15) insight = '🔥 You are ahead! Keep this energy going.';
+        else if (themScore > myScore + 15) insight = '⚡ ' + theirName + ' is ahead of you! Catch up!';
+        else insight = '🤝 You are both at similar focus levels. Great synchrony!';
+        document.getElementById('buddy-insight').textContent = insight;
+
+        // Alert if buddy is struggling
+        const now = Date.now();
+        if (theirEntry.score < 40 && theirEntry.score > 0 && now - lastAlertTime > 60000) {
+          showBuddyAlert(theirName + ' is losing focus! Score dropped to ' + theirEntry.score + '. Check on them!');
+          lastAlertTime = now;
+          if (!buddyPanelOpen) {
+            document.getElementById('buddy-fab').style.animation = 'none';
+            setTimeout(() => document.getElementById('buddy-fab').style.animation = '', 100);
+          }
+        }
+      } else {
+        document.getElementById('them-name').textContent  = 'Waiting for buddy...';
+        document.getElementById('them-score').textContent = '--';
+        document.getElementById('them-state').textContent = 'Not connected yet';
+      }
+    });
+
+    // ── BROADCAST MY SCORE ON EVERY SENSOR UPDATE ────────────
+    // Hook into the existing sensor update to also send buddy data
+    const _origUpdateDashboard = typeof updateDashboard === 'function' ? updateDashboard : null;
+
+    function sendBuddyScore(score, posture, stress, state) {
+      if (!buddyRoomCode || !buddyConnected) return;
+      socket.emit('buddy_score', {
+        room_code: buddyRoomCode,
+        name: buddyMyName,
+        score: score,
+        posture: posture,
+        stress: stress,
+        state: state
+      });
+      // Update my own card live (don't wait for server echo)
+      document.getElementById('you-score').textContent   = score;
+      document.getElementById('you-state').textContent   = getScoreLabel(score);
+      document.getElementById('you-posture').textContent = 'Posture: ' + posture;
+    }
+
+    function getScoreLabel(score) {
+      if (score === null || score === undefined || score === '--') return 'Waiting...';
+      score = parseInt(score);
+      if (score >= 80) return '🔥 Elite Focus';
+      if (score >= 65) return '✅ Good Focus';
+      if (score >= 45) return '⚠ Drifting';
+      if (score > 0)   return '🆘 Low Focus';
+      return 'Starting...';
+    }
+
+    function showBuddyAlert(text) {
+      const el = document.getElementById('buddy-alert');
+      el.textContent = '⚠ ' + text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 8000);
+      speak(text, 'buddy_alert');
+    }
+
+    function showBuddyMsg(el, text, ok) {
+      el.textContent = text;
+      el.className = 'buddy-msg ' + (ok ? 'ok' : 'err');
+      setTimeout(() => { el.textContent = ''; el.className = 'buddy-msg'; }, 4000);
+    }
+
+
     // MIDNIGHT LOCK
     const MIDNIGHT_KEY = 'fm_midnight_override';
 
@@ -2338,5 +2781,93 @@
     <a href="/privacy" style="color:#1D9E75;text-decoration:none;">Privacy Policy</a> ·
     <a href="/app" style="color:#333;text-decoration:none;">focusmirror.onrender.com</a>
   </div>
+
+  <!-- BUDDY MODE FAB -->
+  <button class="buddy-fab" id="buddy-fab" onclick="toggleBuddyPanel()" title="Study Buddy Mode">🤝</button>
+
+  <!-- BUDDY PANEL -->
+  <div class="buddy-panel" id="buddy-panel">
+    <div class="buddy-header">
+      <div class="buddy-header-title">
+        🤝 Study Buddy Mode
+        <span class="buddy-live-dot" id="buddy-dot" style="display:none"></span>
+      </div>
+      <button class="buddy-close" onclick="toggleBuddyPanel()">✕</button>
+    </div>
+
+    <div class="buddy-body">
+
+      <!-- ALERT FOR WHEN BUDDY LOSES FOCUS -->
+      <div class="buddy-alert" id="buddy-alert"></div>
+
+      <!-- SETUP SCREEN -->
+      <div class="buddy-setup" id="buddy-setup">
+        <div class="buddy-icon">🤝</div>
+        <h3>Study Together</h3>
+        <p>Both of you keep FocusMirror open on your own phones. Create or join a room — and you will see each other's live focus score as you study.</p>
+        <div class="buddy-tabs">
+          <div class="buddy-tab active" id="btab-create" onclick="switchBuddyTab('create')">Create Room</div>
+          <div class="buddy-tab" id="btab-join" onclick="switchBuddyTab('join')">Join Room</div>
+        </div>
+
+        <!-- CREATE -->
+        <div id="buddy-create-panel">
+          <input class="buddy-input name-input" id="buddy-my-name-create" placeholder="Your name..." maxlength="20">
+          <button class="buddy-btn" onclick="createBuddyRoom()">Create Room →</button>
+        </div>
+
+        <!-- JOIN -->
+        <div id="buddy-join-panel" style="display:none">
+          <input class="buddy-input name-input" id="buddy-my-name-join" placeholder="Your name..." maxlength="20">
+          <input class="buddy-input" id="buddy-code-input" placeholder="ROOM CODE" maxlength="6" oninput="this.value=this.value.toUpperCase()">
+          <button class="buddy-btn" onclick="joinBuddyRoom()">Join Room →</button>
+        </div>
+
+        <div class="buddy-msg" id="buddy-setup-msg"></div>
+      </div>
+
+      <!-- WAITING FOR BUDDY (creator waiting) -->
+      <div id="buddy-waiting" style="display:none">
+        <div class="buddy-waiting">
+          <p>Share this code with your friend!</p>
+          <div class="code-big" id="buddy-room-code-display">------</div>
+          <div class="code-hint">Your friend opens FocusMirror → Study Buddy → Join Room → enters this code</div>
+          <button class="share-code-btn" onclick="shareBuddyCode()">📱 Share via WhatsApp</button>
+          <div style="margin-top:14px;font-size:12px;color:#555;">Waiting for your friend to join...</div>
+          <div style="margin-top:6px;font-size:11px;color:#333;">Keep this panel open. Your focus is being tracked.</div>
+        </div>
+        <button class="buddy-disconnect-btn" style="margin-top:12px;" onclick="leaveBuddyRoom()">Leave Room</button>
+      </div>
+
+      <!-- LIVE BUDDY VIEW -->
+      <div class="buddy-live" id="buddy-live">
+        <div class="buddy-room-tag">ROOM <span class="buddy-room-code" id="buddy-live-code"></span></div>
+        <div class="buddy-scores">
+          <!-- YOU -->
+          <div class="buddy-score-card you">
+            <div class="bs-label">You</div>
+            <div class="bs-avatar" id="you-avatar">?</div>
+            <div class="bs-name" id="you-name">You</div>
+            <div class="bs-score" id="you-score">--</div>
+            <div class="bs-state" id="you-state">Starting...</div>
+            <div class="bs-posture" id="you-posture">Posture: --</div>
+          </div>
+          <!-- BUDDY -->
+          <div class="buddy-score-card them">
+            <div class="bs-label">Buddy</div>
+            <div class="bs-avatar" id="them-avatar">?</div>
+            <div class="bs-name" id="them-name">Waiting...</div>
+            <div class="bs-score" id="them-score">--</div>
+            <div class="bs-state" id="them-state">Not connected</div>
+            <div class="bs-posture" id="them-posture">Posture: --</div>
+          </div>
+        </div>
+        <div class="buddy-insight" id="buddy-insight">Both scores will appear here as you study together.</div>
+        <button class="buddy-disconnect-btn" onclick="leaveBuddyRoom()">Leave Room</button>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>
