@@ -862,6 +862,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js"></script>
   <script>
+    const socket = io();
     // ONBOARDING
     function obNext(n) {
       document.querySelectorAll('.ob-slide').forEach(s=>s.classList.remove('active'));
@@ -2255,19 +2256,20 @@
     }
 
     function shareBuddyCode() {
-      const code = buddyRoomCode || '';
-      const name = buddyMyName || 'A friend';
-      const text = encodeURIComponent(
-        name + ' invited you to a Study Buddy session on FocusMirror!\n\n' +
-        'Room Code: ' + code + '\n\n' +
-        '1. Open focusmirror.onrender.com\n' +
-        '2. Click the 🤝 button (bottom right)\n' +
-        '3. Tap Join Room\n' +
-        '4. Enter code: ' + code + '\n\n' +
-        'You will see each other's live focus scores! Free, no download.'
-      );
-      window.open('https://wa.me/?text=' + text, '_blank');
-    }
+  const code = buddyRoomCode || '';
+  const name = buddyMyName || 'A friend';
+  const text = encodeURIComponent(
+    name + ' invited you to a Study Buddy session on FocusMirror!\n\n' +
+    'Room Code: ' + code + '\n\n' +
+    '1. Open focusmirror.onrender.com\n' +
+    '2. Click the 🤝 button (bottom right)\n' +
+    '3. Tap Join Room\n' +
+    '4. Enter code: ' + code + '\n\n' +
+    'You will see each other\'s live focus scores! Free, no download.'
+  );
+
+  window.open('https://wa.me/?text=' + text, '_blank');
+}
 
     // ── SOCKET LISTENER ─────────────────────────────────────
     socket.on('buddy_update', function(data) {
@@ -2567,7 +2569,7 @@
 
     function initSocket() {
       if (appSocket) return;
-      appSocket = io();
+      const socket = io();
     }
 
     function joinClass() {
