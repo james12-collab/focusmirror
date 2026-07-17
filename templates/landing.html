@@ -8,127 +8,186 @@
   <meta name="theme-color" content="#1D9E75">
   <link rel="manifest" href="/static/manifest.json">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--green:#1D9E75;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;--text:#fff;--muted:#888;}
-    body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;}
+    :root{--green:#1D9E75;--blue:#4A9EEF;--purple:#8b5cf6;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;--text:#fff;--muted:#888;}
+    body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+    html{scroll-behavior:smooth;}
+
+    /* KEYFRAME ANIMATIONS */
+    @keyframes fadeInUp{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes slideIn{0%{opacity:0;transform:translateX(-50px)}100%{opacity:1;transform:translateX(0)}}
+    @keyframes float{0%,100%{transform:translateY(0px)}50%{transform:translateY(-20px)}}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.2)}}
+    @keyframes glow{0%{box-shadow:0 0 20px rgba(29,158,117,0.3)}50%{box-shadow:0 0 40px rgba(29,158,117,0.6)}100%{box-shadow:0 0 20px rgba(29,158,117,0.3)}}
+    @keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    @keyframes countUp{0%{opacity:0}100%{opacity:1}}
+    @keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes morphShape{0%{border-radius:60% 40% 30% 70% / 60% 30% 70% 40%}50%{border-radius:30% 60% 70% 40% / 40% 60% 30% 70%}100%{border-radius:60% 40% 30% 70% / 60% 30% 70% 40%}}
+
+    /* BACKGROUND */
+    .bg-gradient{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #0a0a0a 0%, #0d1b15 30%, #0a0a0a 60%, #0d0d0d 100%);z-index:-2;pointer-events:none;}
+    .bg-radial-1{position:fixed;top:10%;left:10%;width:400px;height:400px;background:radial-gradient(circle, rgba(29,158,117,0.06) 0%, transparent 70%);z-index:-1;filter:blur(80px);animation:float 8s ease-in-out infinite;}
+    .bg-radial-2{position:fixed;bottom:0;right:5%;width:350px;height:350px;background:radial-gradient(circle, rgba(74,158,239,0.05) 0%, transparent 70%);z-index:-1;filter:blur(80px);animation:float 10s ease-in-out infinite 2s;}
 
     /* NAV */
-    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:1000px;margin:0 auto;}
-    .nav-logo{font-size:18px;font-weight:700;color:var(--green);letter-spacing:-0.5px;}
-    .nav-logo span{color:#fff;}
-    .nav-btn{background:var(--green);color:#000;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .2s;}
-    .nav-btn:hover{opacity:0.85;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:1200px;margin:0 auto;position:relative;z-index:100;animation:slideIn 0.6s ease}
+    .nav-logo{font-size:20px;font-weight:900;background:linear-gradient(135deg, var(--green), var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px;}
+    .nav-links{display:flex;gap:12px;}
+    .nav-btn{background:linear-gradient(135deg, var(--green) 0%, #15a969 100%);color:#000;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+    .nav-btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(29,158,117,0.4);}
+    .nav-secondary{background:transparent;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;border:1px solid rgba(29,158,117,0.3);text-decoration:none;transition:all 0.3s ease;display:inline-flex;align-items:center;}
+    .nav-secondary:hover{border-color:var(--green);color:var(--green);}
 
     /* HERO */
-    .hero{text-align:center;padding:60px 24px 40px;max-width:600px;margin:0 auto;}
-    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:#0d2e1f;border:1px solid var(--green);color:var(--green);padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:24px;}
-    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-    .hero h1{font-size:clamp(32px,8vw,52px);font-weight:800;line-height:1.1;margin-bottom:20px;letter-spacing:-1px;}
-    .hero h1 span{color:var(--green);}
-    .hero p{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:36px;}
-    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-    .btn-primary{background:var(--green);color:#000;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(29,158,117,0.3);}
-    .btn-secondary{background:transparent;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;border:1px solid #333;transition:all .2s;}
-    .btn-secondary:hover{border-color:#555;background:#111;}
+    .hero{text-align:center;padding:80px 24px 60px;max-width:900px;margin:0 auto;position:relative;z-index:10;animation:fadeInUp 0.8s ease 0.2s both;}
+    .hero-backdrop{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle, rgba(29,158,117,0.1), transparent);border-radius:50%;filter:blur(100px);z-index:-1;animation:morphShape 8s ease-in-out infinite;}
+    
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg, rgba(29,158,117,0.1) 0%, rgba(29,158,117,0.05) 100%);border:1px solid rgba(29,158,117,0.3);color:var(--green);padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:24px;backdrop-filter:blur(10px);animation:fadeInUp 0.8s ease 0.3s both;}
+    .hero-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;}
+    
+    .hero h1{font-size:clamp(40px,10vw,64px);font-weight:950;line-height:1.15;margin-bottom:24px;letter-spacing:-1.5px;animation:fadeInUp 0.8s ease 0.4s both;}
+    .hero h1 span{background:linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    
+    .hero p{font-size:18px;color:#aaa;line-height:1.8;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;animation:fadeInUp 0.8s ease 0.5s both;}
+    
+    .hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fadeInUp 0.8s ease 0.6s both;}
+    
+    .btn-primary{background:linear-gradient(135deg, var(--green) 0%, #15a969 100%);color:#000;padding:16px 32px;border-radius:14px;font-size:15px;font-weight:800;text-decoration:none;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;box-shadow:0 4px 15px rgba(29,158,117,0.3);}
+    .btn-primary:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(29,158,117,0.5);}
+    
+    .btn-secondary{background:transparent;color:#fff;padding:16px 32px;border-radius:14px;font-size:15px;font-weight:700;text-decoration:none;border:2px solid rgba(29,158,117,0.4);transition:all 0.3s ease;display:inline-flex;align-items:center;cursor:pointer;}
+    .btn-secondary:hover{border-color:var(--green);background:rgba(29,158,117,0.1);color:var(--green);}
+
+    /* HERO FLOATING ELEMENTS */
+    .hero-float{position:absolute;opacity:0.3;animation:float 6s ease-in-out infinite;z-index:-1;}
+    .float-1{width:120px;height:120px;background:linear-gradient(135deg, var(--green), var(--blue));border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;top:10%;left:5%;animation:float 7s ease-in-out infinite;}
+    .float-2{width:80px;height:80px;background:linear-gradient(135deg, var(--blue), var(--purple));border-radius:70% 30% 30% 70% / 70% 70% 30% 30%;top:15%;right:8%;animation:float 8s ease-in-out infinite 1s;}
 
     /* STATS */
-    .stats{display:flex;justify-content:center;gap:40px;padding:40px 24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);max-width:600px;margin:0 auto;flex-wrap:wrap;}
-    .stat{text-align:center;}
-    .stat-num{font-size:28px;font-weight:800;color:var(--green);}
-    .stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
+    .stats{display:flex;justify-content:center;gap:50px;padding:60px 24px;border-top:1px solid rgba(29,158,117,0.1);border-bottom:1px solid rgba(29,158,117,0.1);max-width:1000px;margin:0 auto;flex-wrap:wrap;position:relative;z-index:10;background:linear-gradient(180deg, transparent, rgba(29,158,117,0.02));}
+    .stat{text-align:center;animation:fadeInUp 0.8s ease;cursor:pointer;transition:all 0.3s ease;}
+    .stat:hover{transform:translateY(-5px);}
+    .stat-num{font-size:clamp(32px,8vw,48px);font-weight:950;background:linear-gradient(135deg, var(--green), var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .stat-label{font-size:13px;color:#999;margin-top:8px;font-weight:600;letter-spacing:0.5px;}
 
-    /* HOW IT WORKS */
-    .section{padding:60px 24px;max-width:800px;margin:0 auto;}
-    .section-tag{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;}
-    .section h2{font-size:clamp(24px,5vw,36px);font-weight:700;margin-bottom:40px;letter-spacing:-0.5px;}
-    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
-    .step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
-    .step-num{font-size:11px;color:var(--green);font-weight:600;letter-spacing:2px;margin-bottom:12px;}
-    .step-icon{font-size:32px;margin-bottom:12px;}
-    .step h3{font-size:16px;font-weight:600;margin-bottom:8px;}
-    .step p{font-size:13px;color:var(--muted);line-height:1.6;}
+    /* SECTIONS */
+    .section{padding:80px 24px;max-width:1000px;margin:0 auto;position:relative;animation:fadeInUp 0.8s ease;}
+    .section-tag{font-size:12px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;font-weight:800;}
+    .section h2{font-size:clamp(32px,7vw,48px);font-weight:900;margin-bottom:50px;letter-spacing:-1px;line-height:1.2;}
+    .section h2 span{background:linear-gradient(135deg, var(--green), var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+    /* STEPS */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;}
+    .step{background:linear-gradient(135deg, rgba(29,158,117,0.05) 0%, rgba(74,158,239,0.02) 100%);border:1px solid rgba(29,158,117,0.15);border-radius:20px;padding:32px;transition:all 0.3s ease;position:relative;overflow:hidden;}
+    .step::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(29,158,117,0.1), transparent);opacity:0;transition:opacity 0.3s ease;z-index:-1;}
+    .step:hover{transform:translateY(-8px);border-color:rgba(29,158,117,0.3);box-shadow:0 12px 40px rgba(29,158,117,0.1);}
+    .step:hover::before{opacity:1;}
+    .step-num{font-size:11px;color:var(--green);font-weight:900;letter-spacing:3px;margin-bottom:16px;}
+    .step-icon{font-size:40px;margin-bottom:16px;animation:float 4s ease-in-out infinite;}
+    .step h3{font-size:18px;font-weight:800;margin-bottom:12px;}
+    .step p{font-size:14px;color:#999;line-height:1.7;}
 
     /* FEATURES */
-    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
-    .feature{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:border-color .2s;}
-    .feature:hover{border-color:var(--green);}
-    .feature-icon{font-size:28px;margin-bottom:12px;}
-    .feature h3{font-size:14px;font-weight:600;margin-bottom:6px;}
-    .feature p{font-size:12px;color:var(--muted);line-height:1.6;}
-
-    /* DEMO SCREEN */
-    .demo{padding:60px 24px;max-width:500px;margin:0 auto;text-align:center;}
-    .demo-screen{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin:32px 0;text-align:left;}
-    .demo-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
-    .demo-row:last-child{border:none;}
-    .demo-label{font-size:12px;color:var(--muted);}
-    .demo-val{font-size:18px;font-weight:700;}
-    .demo-bar{height:4px;background:#1a1a1a;border-radius:2px;margin-top:6px;overflow:hidden;}
-    .demo-fill{height:4px;border-radius:2px;transition:width 2s ease;}
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+    .feature{background:linear-gradient(135deg, rgba(13,27,21,0.4) 0%, rgba(17,17,17,0.3) 100%);border:1px solid rgba(29,158,117,0.15);border-radius:18px;padding:28px;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(10px);}
+    .feature:hover{transform:translateY(-6px);border-color:var(--green);box-shadow:0 8px 32px rgba(29,158,117,0.15);}
+    .feature-icon{font-size:32px;margin-bottom:16px;display:inline-block;transition:transform 0.3s ease;}
+    .feature:hover .feature-icon{transform:scale(1.2) rotate(5deg);}
+    .feature h3{font-size:16px;font-weight:800;margin-bottom:8px;}
+    .feature p{font-size:13px;color:#999;line-height:1.7;}
 
     /* CTA */
-    .cta{text-align:center;padding:60px 24px;background:linear-gradient(180deg,transparent,#0d2e1f22);border-top:1px solid var(--border);}
-    .cta h2{font-size:clamp(24px,5vw,36px);font-weight:700;margin-bottom:16px;letter-spacing:-0.5px;}
-    .cta p{font-size:15px;color:var(--muted);margin-bottom:32px;}
+    .cta{text-align:center;padding:80px 24px;max-width:900px;margin:0 auto;position:relative;animation:fadeInUp 0.8s ease;}
+    .cta::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle, rgba(29,158,117,0.08), transparent);border-radius:50%;filter:blur(80px);z-index:-1;}
+    .cta h2{font-size:clamp(36px,8vw,52px);font-weight:950;margin-bottom:20px;letter-spacing:-1px;}
+    .cta p{font-size:18px;color:#999;margin-bottom:40px;line-height:1.8;}
+    .cta .btn-primary{font-size:16px;padding:18px 40px;box-shadow:0 8px 20px rgba(29,158,117,0.4);}
 
     /* FOOTER */
-    footer{text-align:center;padding:24px;font-size:12px;color:#333;border-top:1px solid var(--border);}
-    footer span{color:var(--green);}
+    footer{text-align:center;padding:40px 24px;font-size:13px;color:#555;border-top:1px solid rgba(29,158,117,0.1);}
+    footer span{color:var(--green);font-weight:700;}
+
+    /* SCROLL REVEAL */
+    .reveal{opacity:0;transform:translateY(30px);transition:all 0.8s ease;}
+    .reveal.active{opacity:1;transform:translateY(0);}
   </style>
 </head>
 <body>
+  <div class="bg-gradient"></div>
+  <div class="bg-radial-1"></div>
+  <div class="bg-radial-2"></div>
 
   <nav>
     <div class="nav-logo">Focus<span>Mirror</span></div>
-    <div style="display:flex;gap:8px;"><a href="/schools" style="background:transparent;color:#666;padding:8px 16px;border-radius:20px;font-size:13px;border:1px solid #333;text-decoration:none;">For Schools</a><a href="/app" class="nav-btn">Try Free →</a></div>
+    <div class="nav-links">
+      <a href="/schools" class="nav-secondary">For Schools</a>
+      <a href="/app" class="nav-btn">🧠 Try Free</a>
+    </div>
   </nav>
 
   <div class="hero">
+    <div class="hero-backdrop"></div>
+    <div class="hero-float float-1"></div>
+    <div class="hero-float float-2"></div>
+    
     <div class="hero-badge">
       <div class="hero-badge-dot"></div>
       AI-Powered • Free • No signup required
     </div>
+    
     <h1>Your brain has a<br><span>Focus Score.</span><br>Do you know yours?</h1>
+    
     <p>FocusMirror uses your phone camera to track blink rate, posture and distractions in real time — and tells you exactly when your brain is done for the day.</p>
+    
     <div class="hero-btns">
       <a href="/app" class="btn-primary">🧠 Start Tracking Free</a>
-      <a href="#how" class="btn-secondary">How it works</a>
+      <a href="#how" class="btn-secondary">Learn How →</a>
     </div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="stat-num">0.5s</div><div class="stat-label">Update frequency</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Signals tracked</div></div>
-    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free forever</div></div>
-    <div class="stat"><div class="stat-num">0</div><div class="stat-label">Signups needed</div></div>
+    <div class="stat reveal">
+      <div class="stat-num">0.5<span style="font-size:0.6em;">s</span></div>
+      <div class="stat-label">Update Frequency</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.1s;">
+      <div class="stat-num" data-target="3">3</div>
+      <div class="stat-label">Signals Tracked</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.2s;">
+      <div class="stat-num">100<span style="font-size:0.6em;">%</span></div>
+      <div class="stat-label">Free Forever</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.3s;">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Signups Needed</div>
+    </div>
   </div>
 
-  <div class="section" id="how">
-    <div class="section-tag">How it works</div>
-    <h2>Three signals.<br>One honest score.</h2>
+  <div class="section reveal" id="how" style="margin-top:60px;">
+    <div class="section-tag">⚡ How it Works</div>
+    <h2>Three signals.<br>One <span>honest score.</span></h2>
     <div class="steps">
-      <div class="step">
+      <div class="step reveal">
         <div class="step-num">STEP 01</div>
         <div class="step-icon">📷</div>
         <h3>Open on your phone</h3>
         <p>No app download. No signup. Just open the link and allow camera access.</p>
       </div>
-      <div class="step">
+      <div class="step reveal" style="transition-delay:0.1s;">
         <div class="step-num">STEP 02</div>
         <div class="step-icon">🎯</div>
         <h3>Calibrate in 3 seconds</h3>
         <p>Sit normally for 3 seconds. FocusMirror learns your personal baseline.</p>
       </div>
-      <div class="step">
+      <div class="step reveal" style="transition-delay:0.2s;">
         <div class="step-num">STEP 03</div>
         <div class="step-icon">📊</div>
         <h3>Study as normal</h3>
         <p>The AI tracks your focus score, posture and blink rate every 2 seconds.</p>
       </div>
-      <div class="step">
+      <div class="step reveal" style="transition-delay:0.3s;">
         <div class="step-num">STEP 04</div>
         <div class="step-icon">⚠</div>
         <h3>Get warned before burnout</h3>
@@ -137,36 +196,36 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-tag">Features</div>
-    <h2>Everything your<br>brain needs.</h2>
+  <div class="section reveal">
+    <div class="section-tag">✨ Features</div>
+    <h2>Everything your<br>brain <span>needs.</span></h2>
     <div class="features">
-      <div class="feature">
+      <div class="feature reveal">
         <div class="feature-icon">👁</div>
         <h3>Blink Rate Tracking</h3>
         <p>Normal is 12-20 blinks/min. Below 8 means fatigue. We track it constantly.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" style="transition-delay:0.1s;">
         <div class="feature-icon">🪑</div>
         <h3>Posture Detection</h3>
         <p>Slouching reduces oxygen to the brain by 30%. We catch it the moment it happens.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" style="transition-delay:0.2s;">
         <div class="feature-icon">📱</div>
         <h3>Distraction Tracking</h3>
         <p>Every tab switch costs 23 minutes of focus. We count every one.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" style="transition-delay:0.3s;">
         <div class="feature-icon">🔥</div>
         <h3>Burnout Prediction</h3>
         <p>Using trend analysis, we warn you minutes before cognitive burnout hits.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" style="transition-delay:0.4s;">
         <div class="feature-icon">🏆</div>
         <h3>Live Leaderboard</h3>
         <p>Compete with others for the highest focus score. Resets daily.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" style="transition-delay:0.5s;">
         <div class="feature-icon">🎖</div>
         <h3>Achievement Badges</h3>
         <p>Unlock badges for focus milestones. Gamified studying that actually works.</p>
@@ -174,11 +233,11 @@
     </div>
   </div>
 
-  <div class="cta">
-    <h2>Ready to see your<br>real focus score?</h2>
+  <div class="cta reveal">
+    <h2>Ready to see your<br>real <span>focus score?</span></h2>
     <p>No download. No signup. Just open and start. 100% free.</p>
-    <a href="/app" class="btn-primary" style="font-size:16px;padding:16px 36px;">🧠 Start Tracking Free</a>
-    <p style="margin-top:16px;font-size:12px;color:#333;">Built by a student. For students. 🎓</p>
+    <a href="/app" class="btn-primary">🧠 Start Tracking Free →</a>
+    <p style="margin-top:24px;font-size:13px;color:#555;">Built by a student. For students. 🎓</p>
   </div>
 
   <footer>
@@ -186,13 +245,44 @@
   </footer>
 
   <script>
-    // Animate demo bars
-    const fills = document.querySelectorAll('.demo-fill');
-    fills.forEach(f => {
-      const target = f.getAttribute('data-target');
-      setTimeout(() => f.style.width = target, 500);
+    // Scroll reveal animations
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Counter animation for stats
+    const statNums = document.querySelectorAll('[data-target]');
+    statNums.forEach(el => {
+      const target = parseInt(el.getAttribute('data-target'));
+      const increment = target / 30;
+      let current = 0;
+      const counter = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(counter);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+      }, 50);
     });
   </script>
-
 </body>
-</html>
