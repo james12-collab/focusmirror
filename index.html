@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A stunning 3D animated carousel UI with glass-morphism effects and smooth animations.">
+    <meta name="theme-color" content="#667eea">
+    <title>3D Animated Carousel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Deployment Status Indicator -->
+    <div id="deployment-status" class="deployment-status">
+        <div class="status-content">
+            <div class="spinner"></div>
+            <p>Loading carousel...</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="carousel-wrapper">
+            <div class="carousel-content">
+                <div class="carousel-items">
+                    <div class="carousel-item active" style="--bg-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="item-inner">
+                            <div class="image-frame">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop" alt="Mountain View">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" style="--bg-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="item-inner">
+                            <div class="image-frame">
+                                <img src="https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=600&h=600&fit=crop" alt="Ocean Sunset">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" style="--bg-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="item-inner">
+                            <div class="image-frame">
+                                <img src="https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?w=600&h=600&fit=crop" alt="Forest Path">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" style="--bg-color: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="item-inner">
+                            <div class="image-frame">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop" alt="Desert Sand">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" style="--bg-color: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                        <div class="item-inner">
+                            <div class="image-frame">
+                                <img src="https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=600&h=600&fit=crop" alt="Northern Lights">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-nav">
+                    <button class="nav-btn prev">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="nav-btn next">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="carousel-dots">
+                    <button class="dot active" data-index="0"></button>
+                    <button class="dot" data-index="1"></button>
+                    <button class="dot" data-index="2"></button>
+                    <button class="dot" data-index="3"></button>
+                    <button class="dot" data-index="4"></button>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h1 class="title">Similar</h1>
+                <p class="subtitle">Discover amazing moments</p>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="label">Rating</span>
+                        <span class="value">5.0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Completed</span>
+                        <span class="value">1 project</span>
+                    </div>
+                </div>
+                <button class="cta-button">Explore Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
