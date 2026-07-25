@@ -473,7 +473,109 @@
     .buddy-waiting .code-big{font-size:28px;font-weight:900;color:#1D9E75;letter-spacing:6px;background:#0d2e1f;padding:14px 20px;border-radius:12px;border:1px solid #1D9E75;margin:12px 0;}
     .buddy-waiting .code-hint{font-size:11px;color:#444;margin-top:8px;}
     .share-code-btn{background:#25D366;color:#000;border:none;border-radius:10px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+/* ================================================================
+   FocusMirror — Blue Theme Patch
+   Paste this block directly before the closing </style> tag in
+   templates/index.html. It overrides brand/UI chrome colors only.
 
+   Left untouched on purpose (these carry meaning, not just style):
+     .status.good / .alert-box.good .message   → live tracking state
+     .mascot-mood.great / mascot SVG fill        → Nova's mood
+     .pom-card.active                            → "in the zone" state
+     score-val / emotion bars / scoreColor()      → live focus data
+     buddy "you" (green) vs "them" (blue) cards   → person A vs B
+   ================================================================ */
+
+:root{
+  --fm-blue:        #4A9EEF;
+  --fm-blue-dim:    rgba(74,158,239,0.14);
+  --fm-blue-border: rgba(74,158,239,0.35);
+  --fm-blue-tint:   #0a1a2e;
+}
+
+/* subtle ambient glow to match the marketing site */
+body{
+  background-image: radial-gradient(ellipse 900px 420px at 50% -10%, rgba(74,158,239,0.10), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* headings + informational accents */
+h1,
+.ob-title,
+.badge-popup-title,
+.class-status,
+.bench-val,
+.midnight-fact b,
+#override-status{
+  color: var(--fm-blue) !important;
+}
+
+/* inputs + focus states */
+.name-input:focus,
+.class-input:focus,
+.youtube-input:focus{
+  border-color: var(--fm-blue) !important;
+}
+
+/* nav + quick links */
+.quick-nav-btn:hover,
+.theme-btn:hover{
+  border-color: var(--fm-blue) !important;
+  color: var(--fm-blue) !important;
+}
+
+/* primary buttons */
+.start-btn:not(:disabled),
+.class-btn:not(.leave),
+.ob-btn,
+.youtube-btn,
+.btn-login,
+.acc-login-btn,
+.report-btn:first-child{
+  background: var(--fm-blue) !important;
+  color: #04151f !important;
+}
+
+/* onboarding progress dots */
+.ob-dot.active{ background: var(--fm-blue) !important; }
+
+/* achievement badges (earned state) */
+.badge-item.earned{
+  border-color: var(--fm-blue-border) !important;
+  background: var(--fm-blue-tint) !important;
+}
+.badge-item.earned .badge-name{ color: var(--fm-blue) !important; }
+.badge-popup{ border-color: var(--fm-blue) !important; }
+.badge-popup-btn{ background: var(--fm-blue) !important; color:#04151f !important; }
+
+/* notes / youtube utility panels */
+.notes-output-box,
+.youtube-transcript-box{ border-color: var(--fm-blue) !important; }
+.notes-output-label{ color: var(--fm-blue) !important; }
+.notes-btn:hover{ border-color: var(--fm-blue) !important; color: var(--fm-blue) !important; }
+
+/* account bar avatar (both duplicate instances) */
+.account-avatar,
+.acc-avatar{
+  border-color: var(--fm-blue) !important;
+  color: var(--fm-blue) !important;
+  background: var(--fm-blue-tint) !important;
+}
+
+/* "Share" secondary button on the report card */
+.report-btn:last-child{
+  background: var(--fm-blue-tint) !important;
+  color: var(--fm-blue) !important;
+  border: 1px solid var(--fm-blue) !important;
+}
+
+/* shareable session card background */
+.share-card{
+  background: linear-gradient(135deg, var(--fm-blue-tint) 0%, #0a0a2e 60%, #1a0a2e 100%) !important;
+}
+
+/* keyboard focus ring, app-wide */
+:focus-visible{ outline: 2px solid var(--fm-blue); outline-offset: 2px; }
   </style>
 </head>
 <body>
