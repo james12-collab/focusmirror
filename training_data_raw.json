@@ -1,0 +1,53 @@
+[
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 31.5,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi"
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 1.0,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi"
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 84,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "duration": 3.6,
+    "hour": 17,
+    "name": "Jamessss"
+  }
+]

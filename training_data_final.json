@@ -1,0 +1,488 @@
+[
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 31.5,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 1.0,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 84,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 0
+    },
+    "duration": 3.6,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 89,
+    "date": "2026-07-28",
+    "duration": 30.85199062684948,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 53,
+      "boreout": 0,
+      "stress": 7
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 86,
+    "date": "2026-07-28",
+    "duration": 0.5,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 45,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 84,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 51,
+      "boreout": 5,
+      "stress": 10
+    },
+    "duration": 4.100851832269543,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 100,
+    "date": "2026-07-28",
+    "duration": 31.20998509427399,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 42,
+      "boreout": 8,
+      "stress": 10
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 87,
+    "date": "2026-07-28",
+    "duration": 1.0113102511718486,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 59,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 89,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 50,
+      "boreout": 0,
+      "stress": 5
+    },
+    "duration": 3.632643035621528,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 95,
+    "date": "2026-07-28",
+    "duration": 30.94985323721075,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 48,
+      "boreout": 7,
+      "stress": 3
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 1.5731124774755674,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 41,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 84,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 57,
+      "boreout": 0,
+      "stress": 6
+    },
+    "duration": 4.539854010116619,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 98,
+    "date": "2026-07-28",
+    "duration": 32.47970108598048,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 43,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 86,
+    "date": "2026-07-28",
+    "duration": 1.4698740778024233,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 53,
+      "boreout": 9,
+      "stress": 9
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 92,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 60,
+      "boreout": 0,
+      "stress": 6
+    },
+    "duration": 4.158235448491946,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 88,
+    "date": "2026-07-28",
+    "duration": 31.545940592683348,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 42,
+      "boreout": 0,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 99,
+    "date": "2026-07-28",
+    "duration": 0.5,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 42,
+      "boreout": 0,
+      "stress": 2
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 78,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 6,
+      "engagement": 52,
+      "boreout": 9,
+      "stress": 5
+    },
+    "duration": 3.781249091171607,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 96,
+    "date": "2026-07-28",
+    "duration": 32.32756295049961,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 5,
+      "engagement": 57,
+      "boreout": 8,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 93,
+    "date": "2026-07-28",
+    "duration": 1.3501812459815412,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 49,
+      "boreout": 10,
+      "stress": 2
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 77,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 6,
+      "engagement": 59,
+      "boreout": 0,
+      "stress": 0
+    },
+    "duration": 3.6803975584038304,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 92,
+    "date": "2026-07-28",
+    "duration": 32.1414762593512,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 7,
+      "engagement": 40,
+      "boreout": 4,
+      "stress": 4
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 89,
+    "date": "2026-07-28",
+    "duration": 1.5973732516773842,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 54,
+      "boreout": 4,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 86,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 47,
+      "boreout": 0,
+      "stress": 0
+    },
+    "duration": 4.54743565372907,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:52 AM",
+    "grade": "A+",
+    "score": 90,
+    "date": "2026-07-28",
+    "duration": 30.935247559097935,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 0,
+      "engagement": 59,
+      "boreout": 0,
+      "stress": 5
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "10:53 AM",
+    "grade": "A+",
+    "score": 86,
+    "date": "2026-07-28",
+    "duration": 0.5,
+    "time_of_day": "Morning",
+    "emotions": {
+      "confusion": 3,
+      "engagement": 53,
+      "boreout": 6,
+      "stress": 0
+    },
+    "username": "hi",
+    "hour": 10,
+    "name": "Hi",
+    "label_burnout": 0
+  },
+  {
+    "time": "05:47 PM",
+    "grade": "A",
+    "score": 79,
+    "date": "2026-06-20",
+    "username": "jamessss",
+    "time_of_day": "Evening",
+    "emotions": {
+      "confusion": 8,
+      "engagement": 51,
+      "boreout": 5,
+      "stress": 0
+    },
+    "duration": 4.261757577654947,
+    "hour": 17,
+    "name": "Jamessss",
+    "label_burnout": 0
+  }
+]

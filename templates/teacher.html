@@ -4,73 +4,350 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Dashboard — FocusMirror</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='global-ui.css') }}">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;padding-bottom:40px;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:20px;max-width:900px;margin:0 auto;}
-    .logo{font-size:16px;font-weight:700;color:#1D9E75;}
-    .logo span{color:#fff;}
-    .nl{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
-    .page{max-width:900px;margin:0 auto;padding:0 16px;}
-    .setup-card{background:#111;border:1px solid #222;border-radius:16px;padding:28px;margin-bottom:20px;text-align:center;}
-    .setup-icon{font-size:48px;margin-bottom:16px;}
-    .setup-title{font-size:22px;font-weight:700;margin-bottom:8px;}
-    .setup-desc{font-size:13px;color:#666;margin-bottom:24px;line-height:1.6;}
-    input{width:100%;max-width:300px;background:#1a1a1a;border:2px solid #333;border-radius:12px;padding:13px;color:#fff;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px;outline:none;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;}
-    input:focus{border-color:#1D9E75;}
-    .btn-row{display:flex;gap:8px;justify-content:center;}
-    .btn{padding:12px 28px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;border:none;}
-    .btn-green{background:#1D9E75;color:#000;}
-    .btn-dark{background:#1a1a1a;color:#888;border:1px solid #333;}
-    .dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
-    .dash-title{font-size:18px;font-weight:700;}
-    .code-badge{background:#0d2e1f;border:1px solid #1D9E75;color:#1D9E75;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:700;letter-spacing:3px;}
-    .sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-    .sum-card{background:#111;border:1px solid #222;border-radius:12px;padding:14px;text-align:center;}
-    .sum-val{font-size:26px;font-weight:800;color:#1D9E75;}
-    .sum-lbl{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
-    .stu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
-    .stu{background:#111;border:1px solid #222;border-radius:14px;padding:14px;transition:all .3s;}
-    .stu.good{border-color:#1D9E75;background:#0a140f;}
-    .stu.warn{border-color:#EF9F27;background:#141000;}
-    .stu.danger{border-color:#E24B4A;background:#140a0a;}
-    .stu.burnout{border-color:#9B59B6;background:#100820;animation:flash 1s infinite;}
-    @keyframes flash{0%,100%{border-color:#9B59B6}50%{border-color:#fff}}
-    .stu-name{font-size:13px;font-weight:600;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .stu-score{font-size:30px;font-weight:800;margin-bottom:8px;}
-    .stu-stats{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:8px;}
-    .stu-state{font-size:9px;padding:2px 8px;border-radius:8px;background:#1a1a1a;display:inline-block;}
-    .stu-warn{font-size:10px;color:#9B59B6;margin-top:6px;}
-    .instr{background:#111;border:1px solid #222;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#555;line-height:1.8;}
-    .instr b{color:#fff;}
-    .dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;margin-right:6px;animation:p 2s infinite;}
-    @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
-    .waiting{text-align:center;padding:50px;color:#333;}
-    .hidden{display:none;}
+    body { padding: 0; }
+    
+    nav {
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      max-width: 1200px;
+    }
+    
+    .setup-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    
+    .setup-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    
+    .setup-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .setup-desc {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 28px;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    input {
+      background: rgba(26, 26, 46, 0.6);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 12px;
+      padding: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 4px;
+      outline: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 300px;
+    }
+    
+    input:focus {
+      border-color: var(--primary);
+      background: rgba(26, 26, 46, 0.8);
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+    }
+    
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(102, 126, 234, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(102, 126, 234, 0.2);
+      border-color: var(--primary);
+    }
+    
+    /* DASHBOARD */
+    .dash-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .dash-title {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .code-badge {
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.5);
+      color: var(--primary);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+    
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #1D9E75;
+      display: inline-block;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* SUMMARY GRID */
+    .sum-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .sum-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .sum-card:hover {
+      background: rgba(26, 26, 46, 0.6);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+    
+    .sum-val {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    
+    .sum-lbl {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    /* INSTRUCTIONS */
+    .instr {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #888;
+      line-height: 1.8;
+    }
+    
+    .instr b {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    /* STUDENT GRID */
+    .stu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .stu {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 18px;
+      transition: all 0.3s ease;
+    }
+    
+    .stu:hover {
+      transform: translateY(-4px);
+      background: rgba(26, 26, 46, 0.6);
+    }
+    
+    .stu.good { border-color: rgba(29, 158, 117, 0.4); }
+    .stu.warn { border-color: rgba(239, 159, 39, 0.4); }
+    .stu.danger { border-color: rgba(226, 75, 74, 0.4); }
+    .stu.burnout { 
+      border-color: rgba(155, 89, 182, 0.6);
+      animation: glow 2s infinite;
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(155, 89, 182, 0.3); }
+      50% { box-shadow: 0 0 20px rgba(155, 89, 182, 0.5); }
+    }
+    
+    .stu-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+    }
+    
+    .stu-score {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+    
+    .stu-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    
+    .stu-state {
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      display: inline-block;
+      color: #888;
+    }
+    
+    .stu-warn {
+      font-size: 11px;
+      color: #9B59B6;
+      margin-top: 8px;
+    }
+    
+    .waiting {
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+      font-size: 24px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    @media (max-width: 1024px) {
+      .sum-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    @media (max-width: 640px) {
+      .sum-grid { grid-template-columns: 1fr; }
+      .stu-grid { grid-template-columns: 1fr; }
+      .setup-card { padding: 24px; }
+    }
   </style>
 </head>
 <body>
   <nav>
-    <div class="logo">Focus<span>Mirror</span></div>
-    <a href="/app" class="nl">← Back to App</a>
+    <div class="nav-logo">Focus<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Mirror</span></div>
+    <a href="/app" class="nav-link">← Back to App</a>
   </nav>
 
-  <div class="page">
+  <div class="container">
     <div class="setup-card" id="setup">
       <div class="setup-icon">🏫</div>
-      <div class="setup-title">Teacher Dashboard</div>
-      <div class="setup-desc">Create a class code and share it with students. Watch their real-time focus scores during study sessions. Get alerted when students show burnout signs.</div>
+      <h1 class="setup-title">Teacher Dashboard</h1>
+      <p class="setup-desc">Create a class code and share it with students. Monitor real-time focus scores and get alerted when students show burnout signs.</p>
       <input id="ccode" placeholder="CLASS CODE" maxlength="8">
       <div class="btn-row">
-        <button class="btn btn-green" onclick="startDash()">Start Dashboard</button>
-        <button class="btn btn-dark" onclick="genCode()">Generate Code</button>
+        <button class="btn btn-primary" onclick="startDash()">Start Dashboard</button>
+        <button class="btn btn-secondary" onclick="genCode()">Generate Code</button>
       </div>
     </div>
 
     <div id="dashboard" class="hidden">
       <div class="dash-header">
-        <div><span class="dot"></span><span class="dash-title" id="dtitle">Class Session</span></div>
+        <div class="dash-title">
+          <span class="live-indicator"></span>
+          <span id="dtitle">Class Session</span>
+        </div>
         <div class="code-badge" id="dcode">------</div>
       </div>
 
@@ -82,7 +359,7 @@
         <div class="sum-card"><div class="sum-val" id="sstu">0</div><div class="sum-lbl">Students</div></div>
         <div class="sum-card"><div class="sum-val" id="savg">--</div><div class="sum-lbl">Avg Focus</div></div>
         <div class="sum-card"><div class="sum-val" id="stop">--</div><div class="sum-lbl">Top Score</div></div>
-        <div class="sum-card"><div class="sum-val" id="sburn" style="color:#9B59B6">0</div><div class="sum-lbl">Need Break</div></div>
+        <div class="sum-card"><div class="sum-val" id="sburn" style="background: linear-gradient(135deg, #9B59B6 0%, #c678dd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div><div class="sum-lbl">Need Break</div></div>
       </div>
 
       <div class="stu-grid" id="sgrid">
@@ -91,7 +368,7 @@
 
       <br>
       <div style="text-align:center">
-        <button class="btn btn-dark" onclick="leaveDash()">End Session</button>
+        <button class="btn btn-secondary" onclick="leaveDash()">End Session</button>
       </div>
     </div>
   </div>

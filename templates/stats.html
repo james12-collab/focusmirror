@@ -4,118 +4,354 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stats — FocusMirror</title>
-  <meta name="theme-color" content="#1D9E75">
+  <meta name="theme-color" content="#667eea">
+  <link rel="stylesheet" href="{{ url_for('static', filename='global-ui.css') }}">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    *{margin:0;padding:0;box-sizing:border-box;}
-    :root{--green:#1D9E75;--dark:#0a0a0a;--card:#111;--border:#1a1a1a;--text:#fff;--muted:#888;}
-    body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;padding:0 0 40px;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;max-width:600px;margin:0 auto;}
-    .nav-logo{font-size:16px;font-weight:700;color:var(--green);}
-    .nav-logo span{color:#fff;}
-    .nav-links{display:flex;gap:12px;}
-    .nav-link{font-size:12px;color:#666;text-decoration:none;padding:6px 12px;border-radius:20px;border:1px solid #222;}
-    .nav-link:hover{color:#fff;border-color:#555;}
-    .nav-link.active{color:var(--green);border-color:var(--green);}
-    .page{max-width:600px;margin:0 auto;padding:0 16px;}
-    .section-tag{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;}
-    .stat-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
-    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
-    .stat-val{font-size:28px;font-weight:800;color:var(--green);}
-    .stat-label{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
-    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;}
-    .chart-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
-    .emotion-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
-    .em-bar-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;}
-    .em-bar-label{font-size:11px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;}
-    .em-bar-track{background:#1a1a1a;border-radius:4px;height:6px;}
-    .em-bar-fill{height:6px;border-radius:4px;}
-    table{width:100%;border-collapse:collapse;}
-    th{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;padding:8px 6px;text-align:left;border-bottom:1px solid #1a1a1a;}
-    td{font-size:12px;color:#888;padding:10px 6px;border-bottom:1px solid #111;}
-    td:first-child{color:#fff;}
-    .grade-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;}
-    .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;overflow-x:auto;}
-    .no-data{text-align:center;padding:60px 20px;color:var(--muted);}
-    .no-data-icon{font-size:48px;margin-bottom:16px;}
-    .no-data h2{font-size:18px;color:#fff;margin-bottom:8px;}
-    .go-btn{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--green);color:#000;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px;}
+    body { padding: 0; }
+    
+    nav {
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      max-width: 1000px;
+    }
+    
+    .page-header {
+      margin-bottom: 40px;
+    }
+    
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .page-subtitle {
+      color: #888;
+      font-size: 14px;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 80px 40px;
+      color: var(--text-muted);
+    }
+    
+    .no-data-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    
+    .no-data h2 {
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    
+    .go-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .go-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* STATS GRID */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      background: rgba(26, 26, 46, 0.6);
+      border-color: var(--primary);
+      transform: translateY(-5px);
+    }
+    
+    .stat-val {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    /* SECTIONS */
+    .section {
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    
+    .chart-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .chart-title {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    
+    /* EMOTION BARS */
+    .emotion-bars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .em-bar-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    
+    .em-bar-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .em-bar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      height: 6px;
+    }
+    
+    .em-bar-fill {
+      height: 6px;
+      border-radius: 4px;
+    }
+    
+    /* TABLE */
+    .table-card {
+      background: rgba(26, 26, 46, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    td {
+      font-size: 13px;
+      color: #888;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    td:first-child {
+      color: #fff;
+      font-weight: 500;
+    }
+    
+    .grade-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    
+    @media (max-width: 1024px) {
+      .stat-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .emotion-bars {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .stat-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .emotion-bars {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-title {
+        font-size: 1.8rem;
+      }
+    }
   </style>
 </head>
 <body>
   <nav>
-    <div class="nav-logo">Focus<span>Mirror</span></div>
+    <div class="nav-logo">Focus<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Mirror</span></div>
     <div class="nav-links">
       <a href="/app" class="nav-link">App</a>
       <a href="/stats" class="nav-link active">Stats</a>
       <a href="/dna" class="nav-link">DNA</a>
+      <a href="/teacher" class="nav-link">Teacher</a>
+      <a href="/world" class="nav-link">World</a>
     </div>
   </nav>
 
-  <div class="page">
+  <div class="container">
     <div class="no-data" id="no-data" style="display:none">
       <div class="no-data-icon">📊</div>
       <h2>No Stats Yet</h2>
-      <p>Complete at least one study session<br>to see your analytics.</p>
+      <p style="margin: 16px 0;">Complete at least one study session to see your analytics.</p>
       <a href="/app" class="go-btn">Start Studying →</a>
     </div>
 
     <div id="stats-content" style="display:none">
-      <div style="font-size:18px;font-weight:700;color:#fff;margin:16px 0 4px" id="stats-username">My Stats</div>
-      <div class="section-tag" style="margin-top:8px">Overview</div>
-      <div class="stat-cards">
-        <div class="stat-card"><div class="stat-val" id="st-sessions">0</div><div class="stat-label">Total Sessions</div></div>
-        <div class="stat-card"><div class="stat-val" id="st-avg">0</div><div class="stat-label">Avg Score</div></div>
-        <div class="stat-card"><div class="stat-val" id="st-best">0</div><div class="stat-label">Best Score</div></div>
-        <div class="stat-card"><div class="stat-val" id="st-time">0m</div><div class="stat-label">Total Study Time</div></div>
+      <div class="page-header">
+        <h1 class="page-title" id="stats-username">My Stats</h1>
+        <p class="page-subtitle">Track your focus and productivity</p>
       </div>
-
-      <div class="section-tag">Score History</div>
-      <div class="chart-card">
-        <div class="chart-title">All Sessions — Focus Score</div>
-        <canvas id="historyChart" height="110"></canvas>
-      </div>
-
-      <div class="section-tag">Score Distribution</div>
-      <div class="chart-card">
-        <div class="chart-title">How Often You Hit Each Score Range</div>
-        <canvas id="distChart" height="100"></canvas>
-      </div>
-
-      <div class="section-tag">Average Emotions</div>
-      <div class="emotion-bars">
-        <div class="em-bar-card">
-          <div class="em-bar-label"><span>😟 Stress</span><span id="em-stress">0</span></div>
-          <div class="em-bar-track"><div class="em-bar-fill" id="em-stress-bar" style="width:0%;background:#E24B4A"></div></div>
-        </div>
-        <div class="em-bar-card">
-          <div class="em-bar-label"><span>😕 Confusion</span><span id="em-confusion">0</span></div>
-          <div class="em-bar-track"><div class="em-bar-fill" id="em-confusion-bar" style="width:0%;background:#EF9F27"></div></div>
-        </div>
-        <div class="em-bar-card">
-          <div class="em-bar-label"><span>😐 Boreout</span><span id="em-boreout">0</span></div>
-          <div class="em-bar-track"><div class="em-bar-fill" id="em-boreout-bar" style="width:0%;background:#BA7517"></div></div>
-        </div>
-        <div class="em-bar-card">
-          <div class="em-bar-label"><span>😊 Engagement</span><span id="em-engagement">0</span></div>
-          <div class="em-bar-track"><div class="em-bar-fill" id="em-engagement-bar" style="width:0%;background:#1D9E75"></div></div>
+      
+      <div class="section">
+        <h3 class="section-title">Overview</h3>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-val" id="st-sessions">0</div>
+            <div class="stat-label">Total Sessions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-avg">0</div>
+            <div class="stat-label">Avg Score</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-best">0</div>
+            <div class="stat-label">Best Score</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-time">0m</div>
+            <div class="stat-label">Total Study Time</div>
+          </div>
         </div>
       </div>
 
-      <div class="section-tag">Session History</div>
-      <div class="table-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Score</th>
-              <th>Grade</th>
-              <th>Duration</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="history-body"></tbody>
-        </table>
+      <div class="section">
+        <h3 class="section-title">Score History</h3>
+        <div class="chart-card">
+          <div class="chart-title">All Sessions — Focus Score</div>
+          <canvas id="historyChart" height="100"></canvas>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Score Distribution</h3>
+        <div class="chart-card">
+          <div class="chart-title">How Often You Hit Each Score Range</div>
+          <canvas id="distChart" height="90"></canvas>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Average Emotions</h3>
+        <div class="emotion-bars">
+          <div class="em-bar-card">
+            <div class="em-bar-label"><span>😟 Stress</span><span id="em-stress">0</span></div>
+            <div class="em-bar-track"><div class="em-bar-fill" id="em-stress-bar" style="width:0%;background:#E24B4A"></div></div>
+          </div>
+          <div class="em-bar-card">
+            <div class="em-bar-label"><span>😕 Confusion</span><span id="em-confusion">0</span></div>
+            <div class="em-bar-track"><div class="em-bar-fill" id="em-confusion-bar" style="width:0%;background:#EF9F27"></div></div>
+          </div>
+          <div class="em-bar-card">
+            <div class="em-bar-label"><span>😐 Boreout</span><span id="em-boreout">0</span></div>
+            <div class="em-bar-track"><div class="em-bar-fill" id="em-boreout-bar" style="width:0%;background:#BA7517"></div></div>
+          </div>
+          <div class="em-bar-card">
+            <div class="em-bar-label"><span>😊 Engagement</span><span id="em-engagement">0</span></div>
+            <div class="em-bar-track"><div class="em-bar-fill" id="em-engagement-bar" style="width:0%;background:#1D9E75"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Session History</h3>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Duration</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
